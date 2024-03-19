@@ -1,0 +1,20 @@
+Package: processDHS
+Type: Package
+Version: 0.1.202403181
+Date: 2024-03-18
+Title: Process Demographic and Health Surveys Data
+Authors@R: person("Jeffrey W.", "Rozelle", email = "jwrozelle@figured.io", role = c("aut", "cre"))
+Description: This package is designed to process Demographic and Health Surveys data, as well as Service Provision Assessment data. This includes functions to produce DHS indicators, and more. It borrows heavily from the DHS github repository, but also extends the indicators produced.
+License: GPL 3.0
+Encoding: UTF-8
+LazyData: true
+Imports:
+    dplyr,
+    labelled,
+    naniar,
+    parallel,
+    future,
+    future.apply,
+    stringr,
+    iotools
+RoxygenNote: 7.3.1
