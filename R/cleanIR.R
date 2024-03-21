@@ -1,11 +1,3 @@
-# 
-# 
-# # dataset <- df_list[[1]]
-# dataset <- IRdata$IA7[,1:1000]
-# dataset <- df_list$MW7
-# dataset <- readDHS_in_par(directory = data_dir, "MWIR7A", "MWFW7A")
-
-
 cleanIR <- function(dataset){
   
   require(future)
