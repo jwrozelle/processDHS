@@ -5,7 +5,7 @@
 #'
 #' @format A vector with 9 elements.
 #' @source Variables created as part of cleanIR_selfCareBarriers()
-#' @name selfMedBarriers.vec
+#' @name selfCareBarriers
 #' @examples
 #' data(selfMedBarriers_vec)
 #' selfMedBarriers.vec
