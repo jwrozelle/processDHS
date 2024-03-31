@@ -46,7 +46,7 @@ cleanIR_selfCareBarriers <- function(IRdata) {
     IRdata.df$selfMedBarrier_drugs <- NA
     IRdata.df$selfMedBarrier_drugs <- ifelse(IRdata.df$v467i == 1, 1, 0)
     
-    
+    data()
     
     
     
