@@ -1,0 +1,13 @@
+#' A list of Variable vectors
+#'
+#'
+#'
+#' @format A list with the following vectors:
+#' \describe{
+#'   \item{IMCI_lt2m_Vars}{Variables used for IMCI among children 2 months old or less}
+#'   \item{IMCI_gt2m_Vars}{Variables used for IMCI among children more than 2 months old}
+#'   ... and so on for each vector ...
+#' }
+#' @source Variables created as part of cleanIR_selfCareBarriers()
+#' @name varVecs
+NULL
