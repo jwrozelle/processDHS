@@ -8,6 +8,8 @@ A list with the following vectors:
 \describe{
   \item{IMCI_lt2m_Vars}{Variables used for IMCI among children 2 months old or less}
   \item{IMCI_gt2m_Vars}{Variables used for IMCI among children more than 2 months old}
+  \item{counsSCVars}{Variables used in counseling caretakers for sick children}
+  \item{peSCVars}{Variables regarding the physical exam of a sick child.}
   ... and so on for each vector ...
 }
 }
