@@ -14,7 +14,9 @@
 #' @param metric Character vector, names of the variables in `spoke_sf` for which metrics (e.g., mean) 
 #'        will be calculated within the buffers.
 #' @param suffix Character, an optional suffix to append to the metric variable names in the output.
-#' @param type the type of calculation to be done. Options are "mean", "median", "max", or "min".
+#' @param type The type of calculation to be done. Options are "mean", "median", "max", "min".
+#' @param count Character, name of count variable. You may also calculate the count of points that fall within a buffer - this will have the same suffix.dssssss
+#' 
 #'
 #' @return An sf object (`hub_sf`) with new columns added for each of the metrics calculated for the points 
 #'         in `spoke_sf` that fall within the buffer radius of each point in `hub_sf`.
@@ -42,7 +44,8 @@ pointMetricsInBuffer <- function(
     # bufferGroupVar = "URBAN_RURA", 
     metric, 
     suffix = "",
-    type = "mean"
+    type = "mean",
+    countVar = NULL
     ) {
   
   # load(Sys.getenv("TESTING_DHS_GEDATA"))
@@ -133,7 +136,7 @@ pointMetricsInBuffer <- function(
   hubIDs <- hub_sf$temp_2cec8e12b8794706bf596fdb6ead814d
   names(hubIDs) <- hubIDs
   
-  # get health facility scores
+  # get health facility scores, returned as vector
   hseScores <- sapply(hubIDs, function(hubID) {
     relevantHFs <- dplyr::filter(joinedObject, temp_2cec8e12b8794706bf596fdb6ead814d == hubID)
     
@@ -150,10 +153,11 @@ pointMetricsInBuffer <- function(
         hseScore[i] <- min(relevantHFs[[paste0(metric[i], suffix)]], na.rm = TRUE)
       }
       
-      
     }
     
-    names(hseScore) <- paste0(metric, suffix)
+    hseScore[length(metric) + 1] <- nrow(relevantHFs)
+    names(hseScore) <- paste0(c(metric, countVar), suffix)
+    
     
     return(hseScore)
     

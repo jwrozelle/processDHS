@@ -11,7 +11,8 @@ pointMetricsInBuffer(
   bufferGroupVar = NULL,
   metric,
   suffix = "",
-  type = "mean"
+  type = "mean",
+  countVar = NULL
 )
 }
 \arguments{
@@ -31,7 +32,9 @@ will be calculated within the buffers.}
 
 \item{suffix}{Character, an optional suffix to append to the metric variable names in the output.}
 
-\item{type}{the type of calculation to be done. Options are "mean", "median", "max", or "min".}
+\item{type}{The type of calculation to be done. Options are "mean", "median", "max", "min".}
+
+\item{count}{Character, name of count variable. You may also calculate the count of points that fall within a buffer - this will have the same suffix.dssssss}
 }
 \value{
 An sf object (`hub_sf`) with new columns added for each of the metrics calculated for the points 
