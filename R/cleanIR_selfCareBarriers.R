@@ -90,7 +90,7 @@ cleanIR_selfCareBarriers <- function(IRdata) {
     IRdata$selfMedBarrier_drugs <- NA
     IRdata$selfMedBarrier_drugs <- ifelse(IRdata$v467i == 1, 1, 0)
     
-    data("selfCareBarriers")
+    data("selfCareBarriers", package = "processDHS")
     
     # count of barriers for self care
     IRdata$selfMedBarrier_count <- NA
