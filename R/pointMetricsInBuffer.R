@@ -59,7 +59,7 @@ pointMetricsInBuffer <- function(
   # metric <- c("sri_score", "sri_basicamenities")
   # 
   # suffix = ".test"
-  # count = "countHF"
+  # countVar = "countHF"
   
   require(dplyr)
   
@@ -161,7 +161,7 @@ pointMetricsInBuffer <- function(
       hseScore[length(metric) + 1] <- nrow(relevantHFs)
       names(hseScore) <- paste0(c(metric, countVar), suffix)
     } else { # otherwise ignore it
-      names(hseScore) <- paste0(c(metric, countVar), suffix)
+      names(hseScore) <- paste0(metric, suffix)
     }
     
     
