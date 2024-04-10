@@ -57,8 +57,9 @@ pointMetricsInBuffer <- function(
   # spoke_sf <- FCdata
   # 
   # metric <- c("sri_score", "sri_basicamenities")
-  #
+  # 
   # suffix = ".test"
+  # count = "countHF"
   
   require(dplyr)
   
@@ -156,7 +157,7 @@ pointMetricsInBuffer <- function(
     }
     
     # if a  count variable is specified - add it to the stats
-    if (!is.null(couldBeLonLat())) {
+    if (!is.null(countVar)) {
       hseScore[length(metric) + 1] <- nrow(relevantHFs)
       names(hseScore) <- paste0(c(metric, countVar), suffix)
     } else { # otherwise ignore it
