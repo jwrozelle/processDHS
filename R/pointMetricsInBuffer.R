@@ -79,10 +79,10 @@ pointMetricsInBuffer <- function(
     warning("There are values in bufferGroupVar that are not in the names of bufferRadius. Some rows will have missing values.")
   }
   
-  # check that the hubID variable is unique
-  if (length(unique(hub_sf[[hubIDVar]])) != nrow(hub_sf)) {
-    stop("hubIDVar must be a uniquely valid ID for each row of hub_sf.")
-  }
+  # # check that the hubID variable is unique
+  # if (length(unique(hub_sf[[hubIDVar]])) != nrow(hub_sf)) {
+  #   stop("hubIDVar must be a uniquely valid ID for each row of hub_sf.")
+  # }
   
   # check to make sure the new variables that are created aren't already in hub_sf
   if (sum(paste0(metric, suffix) %in% names(hub_sf)) > 1) {
