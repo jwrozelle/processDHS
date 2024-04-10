@@ -155,8 +155,15 @@ pointMetricsInBuffer <- function(
       
     }
     
-    hseScore[length(metric) + 1] <- nrow(relevantHFs)
-    names(hseScore) <- paste0(c(metric, countVar), suffix)
+    # if a  count variable is specified - add it to the stats
+    if (!is.null(couldBeLonLat())) {
+      hseScore[length(metric) + 1] <- nrow(relevantHFs)
+      names(hseScore) <- paste0(c(metric, countVar), suffix)
+    } else { # otherwise ignore it
+      names(hseScore) <- paste0(c(metric, countVar), suffix)
+    }
+    
+    
     
     
     return(hseScore)
