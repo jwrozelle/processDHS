@@ -93,8 +93,10 @@ pointMetricsInBuffer <- function(
     stop("type must be specified as 'mean', 'median', 'min', or 'max'.")
   }
   
+  tempID_var <- "temp_2cec8e12b8794706bf596fdb6ead814d"
+  
   # preserve the original order and create a unique ID
-  hub_sf$temp_2cec8e12b8794706bf596fdb6ead814d <- 1:nrow(hub_sf)
+  hub_sf[[tempID_var]] <- 1:nrow(hub_sf)
   
   # if there are different buffer lengths, lapply for each length, otherwise just apply buffer radius to all rows
   if (length(bufferRadius) > 1 ) {
@@ -129,17 +131,26 @@ pointMetricsInBuffer <- function(
   # drop unnecessary stuff
   rm(bufferRadiusGroups, buffers.list)
   
+  # rename spoke_sf
+  metric.suffix <- paste0(metric, "_173c4cba385c49bfb4826cafc7f234e7")
+  
+  # add suffix, this is so that I don't have to worry about managing duplicates in the main dataset
+  names(spoke_sf)[names(spoke_sf) %in% metric] <- metric.suffix
+  
   # join the health facility points to the cluster buffer
-  joinedObject <- sf::st_join(spoke_sf, buff_sf, join = sf::st_within, suffix = suffix)
+  joinedObject <- sf::st_join(spoke_sf, buff_sf, join = sf::st_within)
   # drop the geometry of the joined object
   joinedObject <- sf::st_drop_geometry(joinedObject)
   
-  hubIDs <- hub_sf$temp_2cec8e12b8794706bf596fdb6ead814d
+  # trim to only necessary variables
+  joinedObject <- joinedObject[,c(tempID_var, metric.suffix)]
+  
+  hubIDs <- hub_sf[[tempID_var]]
   names(hubIDs) <- hubIDs
   
   # get health facility scores, returned as vector
   hseScores <- sapply(hubIDs, function(hubID) {
-    relevantHFs <- dplyr::filter(joinedObject, temp_2cec8e12b8794706bf596fdb6ead814d == hubID)
+    relevantHFs <- dplyr::filter(joinedObject, .data[[tempID_var]] == hubID)
     
     hseScore <- c()
     
@@ -148,13 +159,13 @@ pointMetricsInBuffer <- function(
         
         # calculate the appropriate metric
         if (type == "mean") {
-          hseScore[i] <- mean(relevantHFs[[paste0(metric[i], suffix)]], na.rm = TRUE)
+          hseScore[i] <- mean(relevantHFs[[metric.suffix[i]]], na.rm = TRUE)
         } else if (type == "median") {
-          hseScore[i] <- median(relevantHFs[[paste0(metric[i], suffix)]], na.rm = TRUE)
+          hseScore[i] <- median(relevantHFs[[metric.suffix[i]]], na.rm = TRUE)
         } else if (type == "max") {
-          hseScore[i] <- max(relevantHFs[[paste0(metric[i], suffix)]], na.rm = TRUE)
+          hseScore[i] <- max(relevantHFs[[metric.suffix[i]]], na.rm = TRUE)
         } else if (type == "min") {
-          hseScore[i] <- min(relevantHFs[[paste0(metric[i], suffix)]], na.rm = TRUE)
+          hseScore[i] <- min(relevantHFs[[metric.suffix[i]]], na.rm = TRUE)
         }
         
       }
@@ -172,12 +183,12 @@ pointMetricsInBuffer <- function(
       # add hubID
       hseScore[length(hseScore) + 1] <- hubID
       # name the variables
-      names(hseScore) <- c(paste0(c(metric, countVar), suffix), "temp_2cec8e12b8794706bf596fdb6ead814d")
+      names(hseScore) <- c(paste0(c(metric, countVar), suffix), tempID_var)
     } else { # otherwise ignore it
       # add hubID
       hseScore[length(hseScore) + 1] <- hubID
       # name the variables
-      names(hseScore) <- c(paste0(metric, suffix), "temp_2cec8e12b8794706bf596fdb6ead814d")
+      names(hseScore) <- c(paste0(metric, suffix), tempID_var)
     }
     
     
@@ -188,17 +199,17 @@ pointMetricsInBuffer <- function(
   })
   
   hseScores <- t(hseScores) |> as.data.frame()
-  # hseScores$temp_2cec8e12b8794706bf596fdb6ead814d <- row.names(hseScores) |> as.numeric()
+  # hseScores[[tempID_var]] <- row.names(hseScores) |> as.numeric()
   
   # merge the new values back into hub_sf
-  output_sf <- merge(hub_sf, hseScores, by = "temp_2cec8e12b8794706bf596fdb6ead814d", all.x = T, all.y = F)
+  output_sf <- merge(hub_sf, hseScores, by = tempID_var, all.x = T, all.y = F)
   
   # sort by the original order
   output_sf <- output_sf %>% 
-    arrange(temp_2cec8e12b8794706bf596fdb6ead814d)
+    arrange(.data[[tempID_var]])
   
   # drop the temporary variable name
-  output_sf <- output_sf[,!names(output_sf) %in% "temp_2cec8e12b8794706bf596fdb6ead814d"]
+  output_sf <- output_sf[,!names(output_sf) %in% tempID_var]
   
   if(sum(output_sf[[paste0(countVar, suffix)]] == 0) > 1) {
     message("Note that ", sum(output_sf[[paste0(countVar, suffix)]] == 0), " (",round(sum(output_sf[[paste0(countVar, suffix)]] == 0)/nrow(output_sf)*100, 1), "%) of ", nrow(output_sf), " hubs did not have any neighbors within the specified buffer.")
