@@ -142,26 +142,42 @@ pointMetricsInBuffer <- function(
     relevantHFs <- dplyr::filter(joinedObject, temp_2cec8e12b8794706bf596fdb6ead814d == hubID)
     
     hseScore <- c()
-    for (i in 1:length(metric)) {
-      
-      if (type == "mean") {
-        hseScore[i] <- mean(relevantHFs[[paste0(metric[i], suffix)]], na.rm = TRUE)
-      } else if (type == "median") {
-        hseScore[i] <- median(relevantHFs[[paste0(metric[i], suffix)]], na.rm = TRUE)
-      } else if (type == "max") {
-        hseScore[i] <- max(relevantHFs[[paste0(metric[i], suffix)]], na.rm = TRUE)
-      } else if (type == "min") {
-        hseScore[i] <- min(relevantHFs[[paste0(metric[i], suffix)]], na.rm = TRUE)
+    
+    if (nrow(relevantHFs) > 0) {
+      for (i in 1:length(metric)) {
+        
+        # calculate the appropriate metric
+        if (type == "mean") {
+          hseScore[i] <- mean(relevantHFs[[paste0(metric[i], suffix)]], na.rm = TRUE)
+        } else if (type == "median") {
+          hseScore[i] <- median(relevantHFs[[paste0(metric[i], suffix)]], na.rm = TRUE)
+        } else if (type == "max") {
+          hseScore[i] <- max(relevantHFs[[paste0(metric[i], suffix)]], na.rm = TRUE)
+        } else if (type == "min") {
+          hseScore[i] <- min(relevantHFs[[paste0(metric[i], suffix)]], na.rm = TRUE)
+        }
+        
       }
-      
+    } else {
+      # Mark NA if there are no facilities within hubRadius
+      hseScore[1:length(metric)] <- NA
     }
+    
+
     
     # if a  count variable is specified - add it to the stats
     if (!is.null(countVar)) {
+      # add facility count
       hseScore[length(metric) + 1] <- nrow(relevantHFs)
-      names(hseScore) <- paste0(c(metric, countVar), suffix)
+      # add hubID
+      hseScore[length(hseScore) + 1] <- hubID
+      # name the variables
+      names(hseScore) <- c(paste0(c(metric, countVar), suffix), "temp_2cec8e12b8794706bf596fdb6ead814d")
     } else { # otherwise ignore it
-      names(hseScore) <- paste0(metric, suffix)
+      # add hubID
+      hseScore[length(hseScore) + 1] <- hubID
+      # name the variables
+      names(hseScore) <- c(paste0(metric, suffix), "temp_2cec8e12b8794706bf596fdb6ead814d")
     }
     
     
@@ -172,7 +188,7 @@ pointMetricsInBuffer <- function(
   })
   
   hseScores <- t(hseScores) |> as.data.frame()
-  hseScores$temp_2cec8e12b8794706bf596fdb6ead814d <- row.names(hseScores) |> as.numeric()
+  # hseScores$temp_2cec8e12b8794706bf596fdb6ead814d <- row.names(hseScores) |> as.numeric()
   
   # merge the new values back into hub_sf
   output_sf <- merge(hub_sf, hseScores, by = "temp_2cec8e12b8794706bf596fdb6ead814d", all.x = T, all.y = F)
@@ -183,6 +199,10 @@ pointMetricsInBuffer <- function(
   
   # drop the temporary variable name
   output_sf <- output_sf[,!names(output_sf) %in% "temp_2cec8e12b8794706bf596fdb6ead814d"]
+  
+  if(sum(output_sf[[paste0(countVar, suffix)]] == 0) > 1) {
+    message("Note that ", sum(output_sf[[paste0(countVar, suffix)]] == 0), " (",round(sum(output_sf[[paste0(countVar, suffix)]] == 0)/nrow(output_sf)*100, 1), "%) of ", nrow(output_sf), " hubs did not have any neighbors within the specified buffer.")
+  }
   
   
   return(output_sf)
