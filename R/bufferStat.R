@@ -35,7 +35,7 @@ bufferStat <- function(points_sf, raster_obj, radius, type = "mean", na.rm = T) 
   require(terra)
   
   # define the get mode function
-  get_mode <- function(x, na.rm = na.rm) {
+  get_mode <- function(x, na.rm) {
     if (na.rm == TRUE) {
       ux <- unique(na.omit(x))
       mode <- ux[which.max(tabulate(match(x, ux)))]
@@ -52,42 +52,34 @@ bufferStat <- function(points_sf, raster_obj, radius, type = "mean", na.rm = T) 
   # Extract raster values within each buffer and calculate the average
   
   if (type == "mean") {
-    rast_values <- raster::extract(raster_obj, buffers, fun = mean, na.rm = na.rm)[,2]
+    rast_values <- terra::extract(raster_obj, buffers, fun = sum, na.rm = na.rm, exact = T, ID = F)[,1]
   } else if (type == "median") {
-    rast_values <- raster::extract(raster_obj, buffers, fun = median, na.rm = na.rm)[,2]
+    rast_values <- terra::extract(raster_obj, buffers, fun = median, na.rm = na.rm, ID = F)[,1]
   } else if (type == "sum") {
-    rast_values <- raster::extract(raster_obj, buffers, fun = sum, na.rm = na.rm)[,2]
+    rast_values <- terra::extract(raster_obj, buffers, fun = sum, na.rm = na.rm, exact = T, ID = F)[,1]
   } else if (type == "max") {
-    rast_values <- raster::extract(raster_obj, buffers, fun = max, na.rm = na.rm)[,2]
+    rast_values <- terra::extract(raster_obj, buffers, fun = max, na.rm = na.rm, exact = T, ID = F)[,1]
   } else if (type == "min") {
-    rast_values <- raster::extract(raster_obj, buffers, fun = min, na.rm = na.rm)[,2]
+    rast_values <- terra::extract(raster_obj, buffers, fun = min, na.rm = na.rm, exact = T, ID = F)[,1]
   } else if (type == "count") {
-    # Add a constant field to `buffers` for rasterization
-    buffers$constant_field <- 1
-    # Rasterize `buffers` using this new field
-    buffers_raster <- raster::rasterize(buffers, raster_obj, field = "constant_field", fun = max, background = 0)
-    # Mask the raster with the buffer
-    masked_raster <- raster::mask(raster_obj, buffers_raster)
+    binaryRaster <- raster_obj
     if (na.rm == TRUE) {
-      rast_values <- sum(!is.na(raster::values(masked_raster)))
+      values(binaryRaster)[!is.na(values(binaryRaster))] <- 1
     } else if (na.rm == FALSE) {
-      rast_values <- length(raster::values(masked_raster))
+      values(binaryRaster)[1:length(values(binaryRaster))] <- 1
     }
+    rast_values <- raster::extract(binaryRaster, buffers, fun = sum, na.rm = na.rm, exact = T)[,2]
   } else if (type == "mode") {
-    # Add a constant field to `buffers` for rasterization
-    buffers$constant_field <- 1
-    # Rasterize `buffers` using this new field
-    buffers_raster <- raster::rasterize(buffers, raster_obj, field = "constant_field", fun = max, background = 0)
-    # Mask the raster with the buffer
-    masked_raster <- raster::mask(raster_obj, buffers_raster)
-    # extract the values
-    raster_values <- raster::values(masked_raster)
-    # get the mode
-    rast_values <- get_mode(raster_values, na.rm = na.rm)
+    points_sf$tempID_367d611194ae422f9dbedff788200911 <- 1:nrow(points_sf)
+    
+    raster_values.df <- terra::extract(raster_obj, buffers, raw = T) |> as.data.frame()
+    names(raster_values.df) <- c("ID", "raster_values")
+    
+    raster_values_mode.df <- raster_values.df %>% 
+      dplyr::group_by(ID) %>% 
+      summarise(mode = get_mode(raster_values, na.rm = na.rm))
+    rast_values <- raster_values.df$raster_values
   }
-  
-  
-  
   
   return(rast_values)
 }
