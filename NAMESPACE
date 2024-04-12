@@ -3,6 +3,8 @@
 export(BRatIRlevel)
 export(addSib2BR)
 export(addUnmetNeed)
+export(bufferAverage)
+export(bufferStat)
 export(cleanBR_addedChildVars)
 export(cleanFC)
 export(cleanIR_selfCareBarriers)

@@ -10,6 +10,16 @@ A list with the following vectors:
   \item{IMCI_gt2m_Vars}{Variables used for IMCI among children more than 2 months old}
   \item{counsSCVars}{Variables used in counseling caretakers for sick children}
   \item{peSCVars}{Variables regarding the physical exam of a sick child.}
+  \item{Service Readiness Index Variable vectors}{
+   \describe{
+     \item{sri_infprev_Vars}{Variables for the SRI infection prevention domain}
+     \item{sri_diagcapacity_vars}{Variables for the SRI diagnostic capacity domain}
+     \item{sri_med_Vars}{Variables for the  SRI medicines in stock domain}
+     \item{sri_basicamenities_Vars}{Variables for the  SRI basic amenities domain}
+     \item{sri_basicequip_Vars}{Variables for the  SRI basic equipment domain}
+     \item{sri_Vars}{All variables for the service readiness index}
+   }
+  }
   ... and so on for each vector ...
 }
 }
