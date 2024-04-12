@@ -52,7 +52,7 @@ bufferStat <- function(points_sf, raster_obj, radius, type = "mean", na.rm = T) 
   # Extract raster values within each buffer and calculate the average
   
   if (type == "mean") {
-    rast_values <- terra::extract(raster_obj, buffers, fun = sum, na.rm = na.rm, exact = T, ID = F)[,1]
+    rast_values <- terra::extract(raster_obj, buffers, fun = mean, na.rm = na.rm, exact = T, ID = F)[,1]
   } else if (type == "median") {
     rast_values <- terra::extract(raster_obj, buffers, fun = median, na.rm = na.rm, ID = F)[,1]
   } else if (type == "sum") {
