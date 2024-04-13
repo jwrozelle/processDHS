@@ -32,15 +32,16 @@ clipExtract <- function(rast, points_sf) {
   points_transformed <- sf::st_transform(points_sf, terra::crs(rast))
   # create extent
   point_extent <- ext(
-    min(st_coordinates(points_transformed)[,1]),
-    max(st_coordinates(points_transformed)[,1]),
-    min(st_coordinates(points_transformed)[,2]),
-    max(st_coordinates(points_transformed)[,2])
+    min(st_coordinates(points_transformed)[,1]) - (max(st_coordinates(points_transformed)[,1]) - min(st_coordinates(points_transformed)[,1]))*.2,
+    max(st_coordinates(points_transformed)[,1]) + (max(st_coordinates(points_transformed)[,1]) - min(st_coordinates(points_transformed)[,1]))*.2,
+    min(st_coordinates(points_transformed)[,2]) - (max(st_coordinates(points_transformed)[,2]) - min(st_coordinates(points_transformed)[,2]))*.2,
+    max(st_coordinates(points_transformed)[,2]) + (max(st_coordinates(points_transformed)[,2]) - min(st_coordinates(points_transformed)[,2]))*.2,
   )
+  
   # clip the raster by the extent
   crop.rast <- terra::crop(rast, point_extent)
   
-  extractedVals <- terra::extract(terra::project(rast, terra::crs(points_sf)), points_sf, ID = F)[,1]
+  extractedVals <- terra::extract(terra::project(crop.rast, terra::crs(points_sf)), points_sf, ID = F)[,1]
   
   return(extractedVals)
   
