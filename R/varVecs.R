@@ -17,6 +17,7 @@
 #'      \item{sri_basicequip_Vars}{Variables for the  SRI basic equipment domain}
 #'      \item{sri_Vars}{All variables for the service readiness index}
 #'    }
+#'   \item{svc_Vars}{Variables describing if a service is offered (=1), or not (=0)}
 #'   }
 #'   ... and so on for each vector ...
 #' }
