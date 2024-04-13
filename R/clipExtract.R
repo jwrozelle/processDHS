@@ -35,7 +35,7 @@ clipExtract <- function(rast, points_sf) {
     min(st_coordinates(points_transformed)[,1]) - (max(st_coordinates(points_transformed)[,1]) - min(st_coordinates(points_transformed)[,1]))*.2,
     max(st_coordinates(points_transformed)[,1]) + (max(st_coordinates(points_transformed)[,1]) - min(st_coordinates(points_transformed)[,1]))*.2,
     min(st_coordinates(points_transformed)[,2]) - (max(st_coordinates(points_transformed)[,2]) - min(st_coordinates(points_transformed)[,2]))*.2,
-    max(st_coordinates(points_transformed)[,2]) + (max(st_coordinates(points_transformed)[,2]) - min(st_coordinates(points_transformed)[,2]))*.2,
+    max(st_coordinates(points_transformed)[,2]) + (max(st_coordinates(points_transformed)[,2]) - min(st_coordinates(points_transformed)[,2]))*.2
   )
   
   # clip the raster by the extent
