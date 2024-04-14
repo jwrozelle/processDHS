@@ -18,6 +18,7 @@
 #' endVec <- c("0930", "1500", "1230")
 #' obsLengthCalc(startVec, endVec)
 #' obsLengthCalc(startVec, c("0915", "1445", "1300"), correct = FALSE)
+#' @export
 
 obsLengthCalc <- function(startVec, endVec, correct = T) {
   
