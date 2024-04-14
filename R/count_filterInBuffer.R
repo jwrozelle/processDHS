@@ -40,41 +40,55 @@ count_filterInBuffer <- function(point_sf, filterVar, filterValue, radius) {
   # uniqueID <- "facID"
   # radius <- 5e4
   
-  tmpID_var <- "tmpID_3dc99750ca4247f1ad048e86dec6e57c"
+  if (!filterVar %in% names(point_sf)) {
+    warning(paste0("The point_sf object has no column '", filterVar, "'. Returning a vector of NA."))
+    countInBuffer <- rep(NA, nrow(point_sf))
+    return(countInBuffer)
+  }
   
-  # # Assuming FCdata.sf is already loaded and has a unique identifier column named 'id'
-  rownames(point_sf) <- paste0("obs_", 1:nrow(point_sf))
-  point_sf[[tmpID_var]] <- paste0("obs_", 1:nrow(point_sf))
-  
-  # Filter to get only the points where svc_art == 1
-  points_of_interest <- dplyr::filter(point_sf, .data[[filterVar]] %in% filterValue)
-  
-  # Calculate distances from all points in FCdata.sf to the points_of_interest
-  distances <- st_distance(point_sf, points_of_interest)
-  
-  # # Set the distance from a point to itself as Inf (if IDs match)
-  # # This is efficient if the order of points in FCdata.sf and points_of_interest is the same and they have the same rows
-  # if (all(rownames(point_sf) == rownames(points_of_interest))) {
-  #   diag(distances) <- Inf
-  # }
-  
-  # Create a matrix to determine which distances to set as Inf (self-comparisons)
-  self_comparison <- outer(point_sf[[tmpID_var]], points_of_interest[[tmpID_var]], FUN = "==")
-  
-  # Set distances from a point to itself as Inf
-  distances[self_comparison] <- Inf
-  
-  countInBuffer <- apply(distances, 1, function(obs) {
+  if (sum(filterValue %in% point_sf[[filterVar]]) == 0) {
+    warning(paste0("There is no value ", filterValue, " in ", filterVar, ". Returning a vector of NA."))
+    countInBuffer <- rep(NA, nrow(point_sf))
+    return(countInBuffer)
+  } else {
+    tmpID_var <- "tmpID_3dc99750ca4247f1ad048e86dec6e57c"
     
-    # obs <- distances[10,]
+    # # Assuming FCdata.sf is already loaded and has a unique identifier column named 'id'
+    rownames(point_sf) <- paste0("obs_", 1:nrow(point_sf))
+    point_sf[[tmpID_var]] <- paste0("obs_", 1:nrow(point_sf))
     
-    sum_inRadius <- sum(as.numeric(obs) <= radius, na.rm = T)
+    # Filter to get only the points where svc_art == 1
+    points_of_interest <- dplyr::filter(point_sf, .data[[filterVar]] %in% filterValue)
     
-  })
+    # Calculate distances from all points in FCdata.sf to the points_of_interest
+    distances <- st_distance(point_sf, points_of_interest)
+    
+    # # Set the distance from a point to itself as Inf (if IDs match)
+    # # This is efficient if the order of points in FCdata.sf and points_of_interest is the same and they have the same rows
+    # if (all(rownames(point_sf) == rownames(points_of_interest))) {
+    #   diag(distances) <- Inf
+    # }
+    
+    # Create a matrix to determine which distances to set as Inf (self-comparisons)
+    self_comparison <- outer(point_sf[[tmpID_var]], points_of_interest[[tmpID_var]], FUN = "==")
+    
+    # Set distances from a point to itself as Inf
+    distances[self_comparison] <- Inf
+    
+    countInBuffer <- apply(distances, 1, function(obs) {
+      
+      # obs <- distances[10,]
+      
+      sum_inRadius <- sum(as.numeric(obs) <= radius, na.rm = T)
+      
+    })
+    
+    # clean up
+    rm(distances, self_comparison, points_of_interest)
+    
+    return(countInBuffer)
+  }
   
-  # clean up
-  rm(distances, self_comparison, points_of_interest)
   
-  return(countInBuffer)
   
 }
