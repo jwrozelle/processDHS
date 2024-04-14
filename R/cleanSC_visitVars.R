@@ -1,5 +1,31 @@
-
-# SCdata <- htSPA.list[["SC"]]
+#' Clean and Recode Visit Variables for Service Data
+#'
+#' This function processes healthcare service visit data by recoding provider qualifications,
+#' symptoms, and other visit-related variables based on specific survey IDs. It supports multiple
+#' country-specific datasets by applying different recoding rules for each. It also generates new
+#' variables indicating the type of provider, symptoms reported, and visit outcomes.
+#'
+#' @param SCdata A data frame containing the service consultation data, expected to include specific
+#'        variables such as provider codes, symptom codes, and survey identifiers.
+#'
+#' @return The modified SCdata data frame with new or transformed variables:
+#'   - Provider qualifications and types (generalist, specialist, nurses, etc.)
+#'   - Recoded symptom variables (cough, diarrhea, fever, etc.)
+#'   - Visit outcome variables (outcome of consultation, referrals, etc.)
+#'   - Additional derived metrics like symptom indices and referral statuses.
+#'
+#' @examples
+#' # Assuming SCdata is loaded with the necessary survey variables
+#' # Example usage:
+#' SCdata <- data.frame(
+#'   svyID = c("AF_SPA18", "HT_SPA17", "MW_SPA13"),
+#'   providerCode = c(1, 21, 3),
+#'   c255a = c(1, 0, 1), c255b = c(0, 1, 0), c255c = c(1, 1, 0),
+#'   c517a = c("0900", "1000", "1100"), c517b = c("0930", "1030", "1115")
+#' )
+#' cleaned_data <- cleanSC_visitVars(SCdata)
+#' 
+#' @export
 
 cleanSC_visitVars <- function(SCdata) {
   
