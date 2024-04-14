@@ -21,7 +21,7 @@ cleanSC_caregiverVars <- function(SCdata) {
   
   
   
-  if (!SCdata$v000[1] %in% c("MW7")) {
+  if (!SCdata$c000[1] %in% c("MW6")) {
     warning("cleanSC_caregiverVars has not been validated/checked for ", SCdata$v000[1], ".")
   }
   
