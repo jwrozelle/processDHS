@@ -249,17 +249,17 @@ cleanSC_IMCItechquality <- function(SCdata) {
   SCdata$IMCI_techQual_lt2m_count <- ifelse(SCdata$c253 <= 2, rowSums(sf::st_drop_geometry(SCdata)[,IMCI_lt2m_Vars], na.rm = T), NA)
   # Score on scale of 0 to 100
   SCdata$IMCI_techQual_lt2m_score <- NA
-  SCdata$IMCI_techQual_lt2m_count <- ifelse(SCdata$c253 <= 2, SCdata$IMCI_techQual_lt2m_count/ length(IMCI_lt2m_Vars), NA)
+  SCdata$IMCI_techQual_lt2m_score <- ifelse(SCdata$c253 <= 2, SCdata$IMCI_techQual_lt2m_count/ length(IMCI_lt2m_Vars), NA)
   
   #   Less than 2 months count
   SCdata$IMCI_techQual_gt2m_count <- NA
   SCdata$IMCI_techQual_gt2m_count <- ifelse(SCdata$c253 > 2, rowSums(sf::st_drop_geometry(SCdata)[,IMCI_gt2m_Vars], na.rm = T), NA)
   #   Score on scale of 0 to 100
   SCdata$IMCI_techQual_gt2m_score <- NA
-  SCdata$IMCI_techQual_gt2m_count <- ifelse(SCdata$c253 > 2, SCdata$IMCI_techQual_gt2m_count/ length(IMCI_gt2m_Vars), NA)
+  SCdata$IMCI_techQual_gt2m_score <- ifelse(SCdata$c253 > 2, SCdata$IMCI_techQual_gt2m_count/ length(IMCI_gt2m_Vars), NA)
   
   # Score on either
-  
+  SCdata$IMCI_techQual <- ifelse(SCdata$c253 > 2, SCdata$IMCI_techQual_gt2m_score, SCdata$IMCI_techQual_lt2m_score)
   
   return(SCdata)
   
