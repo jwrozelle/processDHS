@@ -411,6 +411,36 @@ cleanSC_visitVars <- function(SCdata) {
   SCdata$referred <- NA
   SCdata$referred <- ifelse(SCdata$c208y %in% 1, 0, 1) # the variable is "no referrals"
   
+  # Visit observation length
+  SCdata$obsLengthTime_SC <- NA
+  SCdata$obsLengthTime_SC <- processDHS::obsLengthCalc(SCdata$c517a, SCdata$c517b, correct = T)
+  
+  # Visit outcomes
+  # c213     "Outcome of consultation"
+  # label define C213    
+  # 1 "Child sent home"
+  # 2 "Child referred to provider at same facility"
+  # 3 "Child admitted to same facility"
+  # 4 "Child sent to lab"
+  # 5 "Child referred to other facility"
+  
+  SCdata$SC_visitOutcome <- NA
+  SCdata$SC_visitOutcome <- ifelse(SCdata$c213 == 1, "Child sent home", SCdata$SC_visitOutcome)
+  SCdata$SC_visitOutcome <- ifelse(SCdata$c213 == 2, "Child referred to provider at same facility", SCdata$SC_visitOutcome)
+  SCdata$SC_visitOutcome <- ifelse(SCdata$c213 == 3, "Child admitted to same facility", SCdata$SC_visitOutcome)
+  SCdata$SC_visitOutcome <- ifelse(SCdata$c213 == 4, "Child sent to lab", SCdata$SC_visitOutcome)
+  SCdata$SC_visitOutcome <- ifelse(SCdata$c213 == 5, "Child referred to other facility", SCdata$SC_visitOutcome)
+  
+  # visit outcome dummy
+  # Sent home
+  SCdata$sc_VO_sentHome <- ifelse(SCdata$c213 == 1, 1, 0)
+  SCdata$sc_VO_referSameHF <- ifelse(SCdata$c213 == 2, 1, 0)
+  SCdata$sc_VO_admit <- ifelse(SCdata$c213 == 3, 1, 0)
+  SCdata$sc_VO_sentLab <- ifelse(SCdata$c213 == 4, 1, 0)
+  SCdata$sc_VO_referOtherHF <- ifelse(SCdata$c213 == 5, 1, 0)
+  
+  
+  
   return(SCdata)
   
 }
