@@ -36,7 +36,7 @@ nn_dist <- function(GEdata) {
   
   
   # Calculate the distance matrix
-  distance_matrix <- st_distance(GEdata)
+  distance_matrix <- sf::st_distance(GEdata)
   
   # Set diagonal to NA to ignore zero distances (point to itself)
   diag(distance_matrix) <- NA
