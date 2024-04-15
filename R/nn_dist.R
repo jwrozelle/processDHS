@@ -28,7 +28,6 @@
 #' distances <- nn_dist(GEdata)
 #' print(distances)
 #'
-#' @importFrom sf st_distance
 #' @export
 
 nn_dist <- function(GEdata) {
