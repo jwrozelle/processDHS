@@ -1,6 +1,6 @@
 Package: processDHS
 Type: Package
-Version: 0.1.202404131
+Version: 0.1.202404141
 Date: 2024-03-18
 Title: Process Demographic and Health Surveys Data
 Authors@R: person("Jeffrey W.", "Rozelle", email = "jwrozelle@figured.io", role = c("aut", "cre"))
