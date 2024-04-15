@@ -32,8 +32,12 @@
 #' @export
 
 nn_dist <- function(GEdata) {
+  
+  load(Sys.getenv("TESTING_SPA_DATA"))
+  
+  
   # Calculate the distance matrix
-  distance_matrix <- st_distance(GEdata.sf)
+  distance_matrix <- st_distance(GEdata)
   
   # Set diagonal to NA to ignore zero distances (point to itself)
   diag(distance_matrix) <- NA
