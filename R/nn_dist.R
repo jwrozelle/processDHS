@@ -33,7 +33,7 @@
 
 nn_dist <- function(GEdata) {
   
-  load(Sys.getenv("TESTING_SPA_DATA"))
+  # load(Sys.getenv("TESTING_SPA_DATA"))
   
   
   # Calculate the distance matrix
