@@ -106,7 +106,7 @@ nn_filterExtract <- function(point_sf, filterVar=NULL, filterValue=NULL, extract
   notNA_subset[[tmpOutput_var]] <- sf::st_drop_geometry(point_sf)[min_distances_index, extractColumn]
   
   # merge back to the original data frame. This is to ensure that things are sorted appropriately and there are missing when there should be.
-  output.df <- merge(sf::st_drop_geometry(point_sf)[, c(tmpID_var)], notNA_subset, by = tmpID_var, all.x = T, all.y = F)
+  output.df <- merge(sf::st_drop_geometry(point_sf)[, c(names(point_sf)[1], tmpID_var)], notNA_subset, by = tmpID_var, all.x = T, all.y = F)
   
   rm(point_sf, notNA_subset, self_comparison, distances, tmpID_var)
   
