@@ -17,10 +17,10 @@ cleanAN <- function(ANdata) {
   ANdata$bypassAN <- ifelse(ANdata$c507 %in% c(0), 1, ANdata$bypassAN)
   ANdata$bypassAN <- ifelse(ANdata$c507 %in% c(1), 0, ANdata$bypassAN)
   
-  # Fee
+  # Fee # checked for AF, HT, MW, NP, TZ
   ANdata$feeAN <- NA
   ANdata$feeAN <- ifelse(ANdata$c504 %in% c(1), 1, ANdata$feeAN)
-  ANdata$feeAN <- ifelse(ANdata$c504 %in% c(2), 0, ANdata$feeAN)
+  ANdata$feeAN <- ifelse(ANdata$c504 %in% c(0), 0, ANdata$feeAN)
   
   # Fee amount
   ANdata$feeAmount_AN <- NA
@@ -72,12 +72,12 @@ cleanAN <- function(ANdata) {
   ANdata$cp_clean <- ifelse(ANdata$c502j %in% c(1,2), 1, ANdata$cp_clean)
   ANdata$cp_clean <- ifelse(ANdata$c502j %in% c(0), 0, ANdata$cp_clean)
   
-  #   Wait time
+  #   staff treatment
   ANdata$cp_staffTreat <- NA
   ANdata$cp_staffTreat <- ifelse(ANdata$c502k %in% c(1,2), 1, ANdata$cp_staffTreat)
   ANdata$cp_staffTreat <- ifelse(ANdata$c502k %in% c(0), 0, ANdata$cp_staffTreat)
   
-  #   Wait time
+  #   cost
   ANdata$cp_cost <- NA
   ANdata$cp_cost <- ifelse(ANdata$c502l %in% c(1,2), 1, ANdata$cp_cost)
   ANdata$cp_cost <- ifelse(ANdata$c502l %in% c(0), 0, ANdata$cp_cost)
