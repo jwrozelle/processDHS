@@ -1,11 +1,11 @@
 #' Clean and Process SC Data for IMCI Technical Quality Assessment
 #'
-#' This function processes a dataset (`SCdata`) to assess the Integrated Management of Childhood Illness (IMCI) technical quality. It validates the dataset against specific criteria, checks for the presence of required variables, calculates the IMCI technical quality scores for children aged less than and more than 2 months, and adds several new variables related to IMCI assessment criteria. It issues warnings for unsupported data types and stops execution if required counseling or physical exam variables are missing. This function is specifically validated for datasets with `v000` values of "MW6" or "HT7".
+#' This function processes a dataset (`SCdata`) to assess the Integrated Management of Childhood Illness (IMCI) technical quality. It validates the dataset against specific criteria, checks for the presence of required variables, calculates the IMCI technical quality scores for children aged less than and more than 2 months, and adds several new variables related to IMCI assessment criteria. It issues warnings for unsupported data types and stops execution if required counseling or physical exam variables are missing. This function is specifically validated for datasets with `c000` values of "MW6" or "HT7".
 #'
 #' @param SCdata A data frame containing the dataset to be processed. This dataset must include specific variables outlined in the function's internal documentation.
 #' @return Returns the modified `SCdata` dataset with additional variables related to the IMCI technical quality assessment, including scores and counts for assessments specific to age groups (<2 months, >2 months).
 #'
-#' @details The function first checks for the presence of specific counseling and physical exam variables. If any are missing, the function stops with an error message prompting the user to first process the dataset with `cleanSC_couns()` or `cleanSC_visitActions()`. The function then processes various aspects of the IMCI assessment, such as main symptoms, general danger signs, HIV status inquiries, and feeding assessments, and calculates scores for technical quality based on these criteria. The function has been validated for datasets specifically labeled as "MW6" or "HT7" in the `v000` variable. If a dataset with a different `v000` value is processed, a warning is issued to indicate that the function's accuracy on such data has not been validated.
+#' @details The function first checks for the presence of specific counseling and physical exam variables. If any are missing, the function stops with an error message prompting the user to first process the dataset with `cleanSC_couns()` or `cleanSC_visitActions()`. The function then processes various aspects of the IMCI assessment, such as main symptoms, general danger signs, HIV status inquiries, and feeding assessments, and calculates scores for technical quality based on these criteria. The function has been validated for datasets specifically labeled as "MW6" or "HT7" in the `c000` variable. If a dataset with a different `c000` value is processed, a warning is issued to indicate that the function's accuracy on such data has not been validated.
 #'
 #'
 #' @references The source of the IMCI assessment criteria and the technical quality indicators is: DOI: 10.7189/jogh.14.04053.
@@ -22,8 +22,8 @@ cleanSC_IMCItechquality <- function(SCdata) {
   # load(spaList.path)
   # SCdata <- spa.list$MW_SPA13$SC
   
-  if(!SCdata$v000[1] %in% c("MW6", "HT7")) {
-    warning("cleanSC_IMCItechquality() has not been validated on ", SCdata$v000[1], " data.")
+  if(!SCdata$c000[1] %in% c("MW6", "HT7")) {
+    warning("cleanSC_IMCItechquality() has not been validated on ", SCdata$c000[1], " data.")
   }
   
   # age in months c253
@@ -50,7 +50,7 @@ cleanSC_IMCItechquality <- function(SCdata) {
   
   
   if (sum(counsVars %in% names(SCdata)) != length(counsVars)) {
-    stop("Error: SC dataset ", SCdata$v000[1], " must first be processed with cleanSC_couns()")
+    stop("Error: SC dataset ", SCdata$c000[1], " must first be processed with cleanSC_couns()")
   }
   
   # check for physical exam variables
@@ -74,7 +74,7 @@ cleanSC_IMCItechquality <- function(SCdata) {
   )
   
   if (sum(peVars %in% names(SCdata)) != length(peVars)) {
-    stop("Error: SC dataset ", SCdata$v000[1], " missing physical exam variables, it must first be processed with cleanSC_visitActions()")
+    stop("Error: SC dataset ", SCdata$c000[1], " missing physical exam variables, it must first be processed with cleanSC_visitActions()")
   }
   
   # PROVIDER ASKED / CARETAKER MENTIONED
