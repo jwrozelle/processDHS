@@ -19,9 +19,56 @@
 #' @export
 which_kmin <- function(x, n) {
   
-  sorted_indices <- order(x)
-  smallest_indices <- head(sorted_indices, n)
-  names(smallest_indices) <- x[sorted_indices[1:n]] |> names()
+  # x <- row
+  # 
+  # x <- c(10, 20, 3, 5, 8)
+  # x <- c(NA, NA, 10, NA, NA, Inf)
+  # names(x) <- c("a", "b", "c", "d", "e", "f")
+  # n <- 6
+  
+  NoCalc.flag <- F
+  
+  # deal with situations where there are missing / nonsense numbers
+  if (sum(x %in% c(NA, Inf, NULL, NaN)) == length(x)) {
+    smallest_indices <- rep(NA, n)
+    indices.names <- rep(NA, n)
+    NoCalc.flag <- T
+  } else if (sum(!x %in% c(NA, Inf, NULL, NaN)) >= n) { # set all the na, null and NaN to inf
+    x.names <- names(x)
+    x <- ifelse(x %in% c(NA, NULL, NaN), Inf, x)
+    names(x) <- x.names
+  } 
+  
+  if (!NoCalc.flag) {
+    sorted_indices <- order(x)
+    smallest_indices <- head(sorted_indices, n)
+    
+    
+    if(length(smallest_indices) < n) {
+      smallest_indices[(length(smallest_indices)+1):n] <- rep(NA, n - length(smallest_indices))
+      if (!is.null(names(x))) {
+        indices.names <- x[sorted_indices[1:n]] |> names()
+        indices.names[(length(indices.names)+1):n] <- NA
+      }
+    } else if (!is.null(names(x))) {
+      indices.names <- x[sorted_indices[1:n]] |> names()
+      
+    }
+    
+    
+    
+    # Truncate and fill with NAs if there aren't enough non missing values
+    if (length(x) >= n & sum(!x %in% c(NA, Inf, NULL, NaN)) < n & !NoCalc.flag) {
+      truncate.number <- sum(!x %in% c(NA, Inf, NULL, NaN))
+      smallest_indices <- c(smallest_indices[1:truncate.number], rep(NA, n - truncate.number))
+      indices.names <- c(indices.names[1:truncate.number], rep(NA, n - truncate.number))
+    }
+  }
+  
+  if (!is.null(names(x))) {
+    names(smallest_indices) <- indices.names
+  }
+  
   
   return(smallest_indices)
 }

@@ -1,5 +1,7 @@
 
-knn_filterExtract <- function(point_sf, y = NULL, filterVar=NULL, filterValue=NULL, extractColumn, knn = 1, type = "mean", y_dedup = F) {
+knn_filterExtract <- function(point_sf, y = NULL, filterVar=NULL, filterValue=NULL, extractColumn, knn = 1, type = "mean", y_dedup = T, na.rm = T) {
+  
+  require(dplyr)
   
   # load(Sys.getenv("TESTING_SPA_DATA"))
   # point_sf <- spa.list$MW_SPA13$FC
@@ -11,15 +13,19 @@ knn_filterExtract <- function(point_sf, y = NULL, filterVar=NULL, filterValue=NU
   # y = point_sf
   # y_dedup = T
   # type = "mean"
+  # knn = 1
   
   tmpID_x_var <- "tmpID_x_3dc99750ca4247f1ad048e86dec6e57c"
   tmpID_y_var <- "tmpID_y_3dc99750ca4247f1ad048e86dec6e57c"
   tmpOutput_var <- "tmpOutput_385ea504c5eb48ac8f7ff58d5621c30c"
+  tmpSort_var <- "tmpSort_3dc99750ca4247f1ad048e86dec6e57c"
+  
+  point_sf[[tmpSort_var]] <- 1:nrow(point_sf)
   
   # Set error messages
   ## Check if 'type' is set to a possible value
-  if (!type %in% c("mean", "median", "min", "max", "sum", "mode")) {
-    stop("You must set type to a valid value. Possible types are 'mean', 'median', 'min', 'max', 'sum', and 'mode'.")
+  if (!type %in% c("mean", "median", "min", "max", "sum")) {
+    stop("You must set type to a valid value. Possible types are 'mean', 'median', 'min', 'max', and 'sum'.")
   }
   ## make sure that it's numeric
   if (type %in% c("mean", "median", "min", "max", "sum") & !is.numeric(point_sf[[extractColumn]])) {
@@ -92,39 +98,69 @@ knn_filterExtract <- function(point_sf, y = NULL, filterVar=NULL, filterValue=NU
     distances[self_comparison] <- Inf
   }
   
-  if (y_dedup & length(distances[as.numeric(sb) == 0]) > 0) {
-    distances[as.numeric(sb) == 0] <- Inf
-    warning(paste0("There were ", length(distances[as.numeric(sb) == 0]), " pairs that shared the same coordinates. These have been excluded."))
-  } else {
-    warning(paste0("There were ", length(distances[as.numeric(sb) == 0]), " pairs that shared the same coordinates. These are included."))
+  # get the count of 0's
+  matching.count <- apply(distances, 1, function(row) {
+    row.0s <- 0 %in% as.numeric(row)
+  }) |> unlist() |> sum()
+  
+  # give warning if there are shared coordinates, correct if requested.
+  if (y_dedup & matching.count > 0) {
+    distances[as.numeric(distances) == 0] <- Inf
+    warning(paste0("There were ", matching.count, " unique observations in point_sf that shared one or more coordinates observations in ", poi_error_name,". Shared coordinates have been excluded."))
+  } else if (0 %in% as.numeric(distances)) {
+    warning(paste0("There were ", matching.count, " unique observations in point_sf that shared one or more coordinates observations in ", poi_error_name,". Shared coordinates are included and may be unreliable."))
   }
 
   
   # Compute the minimum distance for each point to any point in points_of_interest (excluding itself)
-  min_distances_index <- apply(distances, 1, function(row) {
+  minDistanceEmpty.list <- list()
+  minDistanceEmpty.list[1:nrow(distances)] <- 1:nrow(distances)
+  names(minDistanceEmpty.list) <- rownames(distances)
+  
+  min_distances_index <- lapply(minDistanceEmpty.list, function(rowNum) {
     
-    # row <- distances[1,]
+    row <- distances[rowNum,]
     
     # minimum index
-    min_index <- processDHS::which_kmin(row) |> names()
+    min_index <- processDHS::which_kmin(row, knn)
     
     return(min_index)
-  }) |> unlist()
+  })
   
-  # filter down to the 
-  notNA_subset <- dplyr::filter(st_drop_geometry(point_sf)[,c(tmpID_var, extractColumn)], .data[[tmpID_var]] %in% names(min_distances_index))
+  # do the calculation
+  outputValues.vec <- sapply(min_distances_index, function(obs) {
+    # obs <- min_distances_index[[1]]
+    
+    # extract the specific values
+    extractValues.vec <- sf::st_drop_geometry(points_of_interest)[names(obs), extractColumn]
+    
+    if (type == "mean") {
+      output.value <- mean(extractValues.vec, na.rm = na.rm)
+    } else if (type == "median") {
+      output.value <- median(extractValues.vec, na.rm = na.rm)
+    } else if (type == "min") {
+      output.value <- min(extractValues.vec, na.rm = na.rm)
+    } else if (type == "max") {
+      output.value <- max(extractValues.vec, na.rm = na.rm)
+    } else if (type == "sum") {
+      output.value <- sum(extractValues.vec, na.rm = na.rm)
+    }
+    
+    return(output.value)
+  })
   
-  # extract the column values using r * c names
-  notNA_subset[[tmpOutput_var]] <- sf::st_drop_geometry(point_sf)[min_distances_index, extractColumn]
-  
+  outputValues.df <- data.frame(names(outputValues.vec), outputValues.vec)
+  names(outputValues.df) <- c(tmpID_x_var, tmpOutput_var)
+
   # merge back to the original data frame. This is to ensure that things are sorted appropriately and there are missing when there should be.
-  output.df <- merge(sf::st_drop_geometry(point_sf)[, c(names(point_sf)[1], tmpID_var)], notNA_subset, by = tmpID_var, all.x = T, all.y = F)
+  # This is probably uneccessary, could just return outputValues.vec - but my paranoia
+  output.df <- merge(sf::st_drop_geometry(point_sf)[, c(tmpSort_var, tmpID_x_var)], outputValues.df, by = tmpID_x_var, all.x = T, all.y = F)
+  output.df <- output.df %>% arrange(.data[[tmpSort_var]])
+
+
+  output.vec <- output.df[[tmpOutput_var]]
   
-  rm(point_sf, notNA_subset, self_comparison, distances, tmpID_var)
-  
-  output.vec <- ifelse((output.df[[tmOutput_var]]))
-  
-  return(output.df[[tmpOutput_var]])
+  return(output.vec)
 }
 
 

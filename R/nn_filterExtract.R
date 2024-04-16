@@ -31,6 +31,8 @@
 #' @export
 nn_filterExtract <- function(point_sf, filterVar=NULL, filterValue=NULL, extractColumn, y_dedup = T) {
   
+  require(dplyr)
+  
   # load(Sys.getenv("TESTING_SPA_DATA"))
   # point_sf <- spa.list$MW_SPA13$FC
   # filterVar <- "svc_antenatalCare"
@@ -41,8 +43,11 @@ nn_filterExtract <- function(point_sf, filterVar=NULL, filterValue=NULL, extract
   
   tmpID_var <- "tmpID_3dc99750ca4247f1ad048e86dec6e57c"
   tmpOutput_var <- "tmpOutput_385ea504c5eb48ac8f7ff58d5621c30c"
+  tmpSort_var <- "tmpSort_3dc99750ca4247f1ad048e86dec6e57c"
   
   # # Assuming FCdata.sf is already loaded and has a unique identifier column named 'id'
+  point_sf[[tmpSort_var]] <- 1:nrow(point_sf)
+  
   rownames(point_sf) <- paste0("obs_", 1:nrow(point_sf))
   point_sf[[tmpID_var]] <- paste0("obs_", 1:nrow(point_sf))
   
@@ -88,7 +93,7 @@ nn_filterExtract <- function(point_sf, filterVar=NULL, filterValue=NULL, extract
   # Set distances from a point to itself as Inf
   distances[self_comparison] <- Inf
   
-  if (y_dedup & length(distances[as.numeric(distances) == 0]) > 0) {
+  if (y_dedup & 0 %in% as.numeric(distances)) {
     distances[as.numeric(distances) == 0] <- Inf
     warning(paste0("There were ", length(distances[as.numeric(distances) == 0]), " pairs that shared the same coordinates. These have been excluded."))
   } else {
@@ -114,13 +119,15 @@ nn_filterExtract <- function(point_sf, filterVar=NULL, filterValue=NULL, extract
   notNA_subset[[tmpOutput_var]] <- sf::st_drop_geometry(point_sf)[min_distances_index, extractColumn]
   
   # merge back to the original data frame. This is to ensure that things are sorted appropriately and there are missing when there should be.
-  output.df <- merge(sf::st_drop_geometry(point_sf)[, c(names(point_sf)[1], tmpID_var)], notNA_subset, by = tmpID_var, all.x = T, all.y = F)
+  output.df <- merge(sf::st_drop_geometry(point_sf)[, c(tmpSort_var, tmpID_var)], notNA_subset, by = tmpID_var, all.x = T, all.y = F)
+  output.df <- output.df %>% dplyr::arrange(.data[[tmpSort_var]])
+  
   
   rm(point_sf, notNA_subset, self_comparison, distances, tmpID_var)
   
-  output.vec <- ifelse((output.df[[tmOutput_var]]))
+  output.vec <- output.df[[tmpOutput_var]]
   
-  return(output.df[[tmpOutput_var]])
+  return(output.vec)
 }
 
 
