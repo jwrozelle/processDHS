@@ -4,7 +4,13 @@
 \alias{nn_filterExtract}
 \title{Nearest Neighbor Filtering and Extraction}
 \usage{
-nn_filterExtract(point_sf, filterVar = NULL, filterValue = NULL, extractColumn)
+nn_filterExtract(
+  point_sf,
+  filterVar = NULL,
+  filterValue = NULL,
+  extractColumn,
+  y_dedup = T
+)
 }
 \arguments{
 \item{point_sf}{A spatial data frame containing point data.}

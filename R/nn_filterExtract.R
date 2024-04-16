@@ -29,7 +29,7 @@
 #' # nn_filterExtract(point_sf, filterVar = "svc_antenatalCare", filterValue = 1, extractColumn = "typeDHS_category")
 #'
 #' @export
-nn_filterExtract <- function(point_sf, filterVar=NULL, filterValue=NULL, extractColumn) {
+nn_filterExtract <- function(point_sf, filterVar=NULL, filterValue=NULL, extractColumn, y_dedup = T) {
   
   # load(Sys.getenv("TESTING_SPA_DATA"))
   # point_sf <- spa.list$MW_SPA13$FC
@@ -88,6 +88,14 @@ nn_filterExtract <- function(point_sf, filterVar=NULL, filterValue=NULL, extract
   # Set distances from a point to itself as Inf
   distances[self_comparison] <- Inf
   
+  if (y_dedup & length(distances[as.numeric(distances) == 0]) > 0) {
+    distances[as.numeric(distances) == 0] <- Inf
+    warning(paste0("There were ", length(distances[as.numeric(distances) == 0]), " pairs that shared the same coordinates. These have been excluded."))
+  } else {
+    warning(paste0("There were ", length(distances[as.numeric(distances) == 0]), " pairs that shared the same coordinates. These are included"))
+  }
+  
+  
   # Compute the minimum distance for each point to any point in points_of_interest (excluding itself)
   min_distances_index <- apply(distances, 1, function(row) {
     
@@ -109,6 +117,8 @@ nn_filterExtract <- function(point_sf, filterVar=NULL, filterValue=NULL, extract
   output.df <- merge(sf::st_drop_geometry(point_sf)[, c(names(point_sf)[1], tmpID_var)], notNA_subset, by = tmpID_var, all.x = T, all.y = F)
   
   rm(point_sf, notNA_subset, self_comparison, distances, tmpID_var)
+  
+  output.vec <- ifelse((output.df[[tmOutput_var]]))
   
   return(output.df[[tmpOutput_var]])
 }
