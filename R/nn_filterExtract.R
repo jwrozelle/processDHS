@@ -101,9 +101,9 @@ nn_filterExtract <- function(point_sf, filterVar=NULL, filterValue=NULL, extract
   # give warning if there are shared coordinates, correct if requested.
   if (y_dedup & matching.count > 0) {
     distances[as.numeric(distances) == 0] <- Inf
-    warning(paste0("There were ", matching.count, " unique observations in point_sf that shared one or more coordinates observations in ", poi_error_name,". Shared coordinates have been excluded."))
+    warning(paste0("There were ", matching.count, " unique observations in point_sf that shared one or more coordinates observations in point_sf. Shared coordinates have been excluded."))
   } else if (0 %in% as.numeric(distances)) {
-    warning(paste0("There were ", matching.count, " unique observations in point_sf that shared one or more coordinates observations in ", poi_error_name,". Shared coordinates are included and may be unreliable."))
+    warning(paste0("There were ", matching.count, " unique observations in point_sf that shared one or more coordinates observations in point_sf. Shared coordinates are included and may be unreliable."))
   }
   
   
