@@ -1,4 +1,41 @@
-
+#' Extract Nearest Neighbor Based on Specified Parameters
+#'
+#' This function performs a K-nearest neighbor search using a specified column from an sf object. 
+#' It allows filtering of data based on given criteria and computes summary statistics for the 
+#' nearest neighbors.
+#'
+#' @param point_sf An sf object; the source of the points for nearest neighbor search.
+#' @param y An optional sf object used as the target for distance calculation. If NULL, `point_sf` 
+#'   is used as both source and target.
+#' @param filterVar A character string specifying the column name in `point_sf` or `y` to use for 
+#'   filtering.
+#' @param filterValue The value to filter by in the `filterVar` column.
+#' @param extractColumn A character string specifying the column from which to extract the 
+#'   values after the nearest neighbor search.
+#' @param knn An integer indicating the number of nearest neighbors to consider.
+#' @param type A character string indicating the type of summary statistic to return; must be 
+#'   one of "mean", "median", "min", "max", or "sum".
+#' @param y_dedup A boolean indicating whether to remove duplicated coordinates in `y`.
+#' @param na.rm A boolean indicating whether missing values should be removed in the calculation.
+#'
+#' @return Returns a vector of the calculated summary statistics for the nearest neighbors.
+#'
+#' @examples
+#' # Load your sf object into point_sf
+#' # Specify the parameters accordingly
+#' result <- knn_filterExtract(point_sf = my_sf_data, 
+#'                             extractColumn = "desired_column",
+#'                             filterVar = "filter_column",
+#'                             filterValue = "specific_value",
+#'                             knn = 3,
+#'                             type = "mean")
+#' @importFrom dplyr filter arrange
+#' @importFrom sf st_distance st_drop_geometry
+#' @export
+#'
+#' @note Ensure your sf objects (`point_sf` and optionally `y`) are properly formatted and
+#'   contain the necessary columns specified in `filterVar` and `extractColumn`. 
+#'   This function depends on `dplyr` and `sf` for its operations.
 knn_filterExtract <- function(point_sf, y = NULL, filterVar=NULL, filterValue=NULL, extractColumn, knn = 1, type = "mean", y_dedup = T, na.rm = T) {
   
   require(dplyr)
