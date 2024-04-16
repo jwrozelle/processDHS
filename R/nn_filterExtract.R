@@ -93,11 +93,17 @@ nn_filterExtract <- function(point_sf, filterVar=NULL, filterValue=NULL, extract
   # Set distances from a point to itself as Inf
   distances[self_comparison] <- Inf
   
-  if (y_dedup & 0 %in% as.numeric(distances)) {
+    # get the count of 0's
+  matching.count <- apply(distances, 1, function(row) {
+    row.0s <- 0 %in% as.numeric(row)
+  }) |> unlist() |> sum()
+  
+  # give warning if there are shared coordinates, correct if requested.
+  if (y_dedup & matching.count > 0) {
     distances[as.numeric(distances) == 0] <- Inf
-    warning(paste0("There were ", length(distances[as.numeric(distances) == 0]), " pairs that shared the same coordinates. These have been excluded."))
-  } else {
-    warning(paste0("There were ", length(distances[as.numeric(distances) == 0]), " pairs that shared the same coordinates. These are included"))
+    warning(paste0("There were ", matching.count, " unique observations in point_sf that shared one or more coordinates observations in ", poi_error_name,". Shared coordinates have been excluded."))
+  } else if (0 %in% as.numeric(distances)) {
+    warning(paste0("There were ", matching.count, " unique observations in point_sf that shared one or more coordinates observations in ", poi_error_name,". Shared coordinates are included and may be unreliable."))
   }
   
   
