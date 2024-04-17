@@ -1,6 +1,42 @@
-# ANdata <- htSPA.list$AN
+#' Clean Antenatal Care Data
+#'
+#' This function preprocesses and cleans antenatal care survey data by renaming, recoding, and
+#' creating new variables. It also computes summary measures such as the sum of problems reported,
+#' and satisfaction indices.
+#'
+#' @param ANdata A dataframe containing antenatal care survey data with specific columns expected
+#'   based on survey question codes (e.g., c004 for facility ID).
+#'
+#' @return A modified dataframe with new and recalculated variables including:
+#'   - facID: Renamed facility ID.
+#'   - age_client: Recoded age of the client.
+#'   - waitAN: Waiting time, with specific codes recoded to NA.
+#'   - bypassAN: Bypass indicator recoded to binary format.
+#'   - feeAN: Fee payment indicator recoded to binary format.
+#'   - feeAmount_AN: Amount paid, with outliers recoded to NA.
+#'   - cp_*: A series of binary variables indicating client reported problems.
+#'   - cp_sum: A sum of all reported problems.
+#'   - cp_index and cp_index_pct: Indices derived from a multiple correspondence analysis of problems.
+#'   - satisfied: Satisfaction binary indicator.
+#'   - recommend: Recommendation to friends or family as a binary indicator.
+#'   - satisfy_outcome and cp_outcome: Composite outcome measures.
+#'
+#' @examples
+#' cleaned_data <- cleanAN(ANdata = my_survey_data)
+#'
+#' @importFrom Hmisc cut2
+#' @importFrom FactoMineR MCA
+#' @export
+#'
+#' @note It is critical to ensure that ANdata contains all the required columns with specific
+#'   coding as used in the function. The function assumes certain question codes (e.g., c004,
+#'   c511, etc.) are present and uses them for processing.
 
 cleanAN <- function(ANdata) {
+  
+  # require(dplyr)
+  # require(FactoMineR)
+  # require(Hmisc)
   
   # rename facility ID
   ANdata$facID <- ANdata$c004
@@ -91,7 +127,7 @@ cleanAN <- function(ANdata) {
   ANdata$cp_sum <- rowSums(ANdata[,cp_names])
   
   # Get the complaints index
-  mca_result <- MCA(ANdata[cp_names])
+  mca_result <- FactoMineR::MCA(ANdata[cp_names])
   # create cp index
   ANdata$cp_index <- mca_result$ind$coord[, 1]
   ANdata$cp_index <- scale(ANdata$cp_index)

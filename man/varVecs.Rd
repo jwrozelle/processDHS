@@ -20,6 +20,7 @@ A list with the following vectors:
      \item{sri_Vars}{All variables for the service readiness index}
    }
   \item{svc_Vars}{Variables describing if a service is offered (=1), or not (=0)}
+  \item{danger_sign_vars}{AN danger signs known by the mother}
   }
   ... and so on for each vector ...
 }
