@@ -156,6 +156,8 @@ cleanAN_client <- function(ANdata) {
   
   
   # c503     "Part of prepayment plan/insurance that pays part of cost"
+  
+  return(ANdata)
 
   
 }
