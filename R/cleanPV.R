@@ -42,18 +42,31 @@ cleanPV <- function(PVdata) {
   
   # years
   #   Graduated
-  PVdata$year_grad <- PVdata$w105
-  PVdata$year_startFac <- PVdata$w106
+  PVdata$year_grad <- ifelse(PVdata$w105 %in% c(0, 9998), NA, PVdata$w105) # 0 is no technical training, can use year started working at health facility as proxy, but AF, HT, MW, NP, and TZ don't have any 0's
+  PVdata$year_startFac <- ifelse(PVdata$w106 == 9998, NA, PVdata$w106)
   PVdata$year_interview <- PVdata$w033
+  PVdata$years_edu <- ifelse(PVdata$w103a == 99, NA, PVdata$w103a) # w103a    "Total years of primary, secondary and further education"
   
   #   Calculated years
   PVdata$years_atFac <- PVdata$year_interview - PVdata$year_startFac
   PVdata$years_sinceGrad <- PVdata$year_interview - PVdata$year_grad
   
-  # hours per week
-  PVdata$hoursPerWeek <- PVdata$w108
+  
+  
+  # w108     "Hours per week work in facility"
+  # label define W108    
+  # 99 "Missing"
+  PVdata$hoursPerWeek <- (PVdata$w108)
   
   # supervised in past 3 months
+  # w111     "Supervision of work"
+  # W111    
+  # 0 "No"
+  # 1 "Yes, past 3 months"
+  # 2 "Yes, past 4-6 months"
+  # 3 "Yes, past 7-12 months"
+  # 4 "Yes, more than 12 months ago"
+  
   PVdata$supervisedIn3Months <- NA
   PVdata$supervisedIn3Months <- ifelse(PVdata$w111 %in% 1, 1, 0)
   
@@ -78,9 +91,20 @@ cleanPV <- function(PVdata) {
   PVdata$inService_child <- ifelse(PVdata$w144 %in% 1, 1, 0)
   
   
+  # w114     "Has written job description"
+  # label define W114    
+  # 0 "No"
+  # 1 "Yes, observed"
+  # 2 "Yes, reported"
+  PVdata$pv_jobDescription <- NA
+  PVdata$pv_jobDescription <- ifelse(PVdata$w114 == 1 | PVdata$w114 == 2, 1, 0)
+  
   
   # child health in-service training
   #   Child health in-service: any in-service
+  PVdata$inService_CHany <- NA
+  PVdata$inService_CHany <- ifelse(PVdata$w144 %in% 1, 1, 0)
+  #   Cold chain
   PVdata$inService_CHcoldChain <- NA
   PVdata$inService_CHcoldChain <- ifelse(PVdata$w144a %in% 1, 1, 0)
   #   ARI dx and tx
@@ -117,7 +141,102 @@ cleanPV <- function(PVdata) {
   PVdata$inService_CHart <- NA
   PVdata$inService_CHart <- ifelse(PVdata$w144m %in% 1, 1, 0)
   
+  inService_CH_vars <- c(
+    # "inService_CHany",
+    "inService_CHcoldChain",
+    "inService_CHariDxTx",
+    "inService_CHdiarrDxTx",
+    "inService_CHnutrition",
+    "inService_CHbf",
+    "inService_CHinfFeed",
+    "inService_CHimci",
+    "inService_CHmalariaDx",
+    "inService_CHmalariaDxRDT",
+    "inService_CHmalariaTx",
+    "inService_CHhiv",
+    "inService_CHart"
+  )
   
+  inService_CH_vars_inDF <- c()
+  for(service in inService_AN_vars) {
+    if (service %in% names(PVdata) & sum(is.na(PVdata[[service]])) < nrow(PVdata)) {
+      inService_CH_vars_inDF <- c(inService_CH_vars_inDF, service)
+    }
+  }
+  
+  PVdata$inService_CH_count <- NA
+  PVdata$inService_CH_count <- rowSums(sf::st_drop_geometry(PVdata)[,inService_CH_vars_inDF], na.rm = T)
+  
+  PVdata$inService_CH_pct <- NA
+  PVdata$inService_CH_pct <- ifelse(PVdata$inService_CH_count > 0, 1, 0)
+  
+  
+  
+  # antenatal care in-service training
+  #   ANC/PNC in-service: Any
+  PVdata$inService_ANany <- NA
+  PVdata$inService_ANany <- ifelse(PVdata$w146 %in% 1, 1, 0)
+  #   ANC counseling (nutrition/ FP/ newborn care)
+  PVdata$inService_ANcounseling <- NA
+  PVdata$inService_ANcounseling <- ifelse(PVdata$w146a %in% 1, 1, 0)
+  #   ANC screening (blood pressure, urine glucose/ protein)
+  PVdata$inService_ANscreening <- NA
+  PVdata$inService_ANscreening <- ifelse(PVdata$w146b %in% 1, 1, 0)
+  #   Complications of pregnancy and their management
+  PVdata$inService_ANcomplications <- NA
+  PVdata$inService_ANcomplications <- ifelse(PVdata$w146d %in% 1, 1, 0)
+  #   IPT of malaria in pregnancy
+  PVdata$inService_ANmalariaIPT <- NA
+  PVdata$inService_ANmalariaIPT <- ifelse(PVdata$w146f %in% 1, 1, 0)
+  #   Any topic related to HIV/AIDS or PMTCT
+  PVdata$inService_ANhivPMTCT <- NA
+  PVdata$inService_ANhivPMTCT <- ifelse(PVdata$w146h %in% 1, 1, 0)
+  #   Prevention of PMTCT or HIV/AIDS
+  PVdata$inService_ANhivPrevention <- NA
+  PVdata$inService_ANhivPrevention <- ifelse(PVdata$w146i %in% 1, 1, 0)
+  #   Modified obstetric practices as relates to HIV/AIDS
+  PVdata$inService_ANobstetricHIV <- NA
+  PVdata$inService_ANobstetricHIV <- ifelse(PVdata$w146j %in% 1, 1, 0)
+  #   Antiretroviral prophylactic treatment for PMTCT
+  PVdata$inService_ANartPMTCT <- NA
+  PVdata$inService_ANartPMTCT <- ifelse(PVdata$w146n %in% 1, 1, 0)
+  #   Nutritional counseling for newborn of HIV+ mothers
+  PVdata$inService_ANnutrHIVnewborn <- NA
+  PVdata$inService_ANnutrHIVnewborn <- ifelse(PVdata$w146o %in% 1, 1, 0)
+  #   Nutritional assessment of pregnant woman (BMI, M-UACM)
+  PVdata$inService_ANnutrAssess <- NA
+  PVdata$inService_ANnutrAssess <- ifelse(PVdata$w146r %in% 1, 1, 0)
+  #   Infant and young child feeding
+  PVdata$inService_ANinfChildFeed <- NA
+  PVdata$inService_ANinfChildFeed <- ifelse(PVdata$w146s %in% 1, 1, 0)
+  
+  inService_AN_vars <- c(
+    "inService_ANany",
+    "inService_ANcounseling",
+    "inService_ANscreening",
+    "inService_ANcomplications",
+    "inService_ANmalariaIPT",
+    "inService_ANhivPMTCT",
+    "inService_ANhivPrevention",
+    "inService_ANobstetricHIV",
+    "inService_ANartPMTCT",
+    "inService_ANnutrHIVnewborn",
+    "inService_ANnutrAssess",
+    "inService_ANinfChildFeed"
+  )
+  
+  inService_AN_vars_inDF <- c()
+  for(service in inService_AN_vars) {
+    if (service %in% names(PVdata) & sum(is.na(PVdata[[service]])) < nrow(PVdata)) {
+      inService_AN_vars_inDF <- c(inService_AN_vars_inDF, service)
+    }
+  }
+  
+  PVdata$inService_AN_count <- NA
+  PVdata$inService_AN_count <- rowSums(sf::st_drop_geometry(PVdata)[,inService_AN_vars_inDF], na.rm = T)
+  
+  PVdata$inService_AN_pct <- NA
+  PVdata$inService_AN_pct <- ifelse(PVdata$inService_AN_count > 0, 1, 0)
   
   
   return(PVdata)
