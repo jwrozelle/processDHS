@@ -158,7 +158,7 @@ cleanPV <- function(PVdata) {
   )
   
   inService_CH_vars_inDF <- c()
-  for(service in inService_AN_vars) {
+  for(service in inService_CH_vars) {
     if (service %in% names(PVdata) & sum(is.na(PVdata[[service]])) < nrow(PVdata)) {
       inService_CH_vars_inDF <- c(inService_CH_vars_inDF, service)
     }
