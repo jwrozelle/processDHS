@@ -17,10 +17,18 @@
 #'      \item{sri_basicequip_Vars}{Variables for the  SRI basic equipment domain}
 #'      \item{sri_Vars}{All variables for the service readiness index}
 #'    }
+#'    }
+#'   \item{Service Readiness Index Variable (JDK) vectors}{
+#'    \describe{
+#'      \item{sriJDK_infprev_Vars}{JDK version of variables for the SRI infection prevention domain}
+#'      \item{sriJDK_diagcapacity_vars}{JDK version of variables for the SRI diagnostic capacity domain}
+#'      \item{sriJDK_med_Vars}{JDK version of variables for the  SRI medicines in stock domain}
+#'      \item{sriJDK_basicamenities_Vars}{JDK version of variables for the  SRI basic amenities domain}
+#'      \item{sriJDK_basicequip_Vars}{JDK version of variables for the  SRI basic equipment domain}
+#'    }
+#'    }
 #'   \item{svc_Vars}{Variables describing if a service is offered (=1), or not (=0)}
 #'   \item{danger_sign_vars}{AN danger signs known by the mother}
-#'   }
-#'   ... and so on for each vector ...
 #' }
 #' @source Variables created as part of cleanIR_selfCareBarriers()
 #' @name varVecs
