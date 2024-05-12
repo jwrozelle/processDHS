@@ -95,6 +95,44 @@ cleanFP <- function(FPdata) {
   FPdata$cp_index_pct <- Hmisc::cut2(FPdata$cp_index, g = 4) |> as.numeric()
   
   
+  
+  if (FPdata$svyID[1] == "NP_SPA15") {
+    
+    # label define C520    
+    # 1 "Very satisfied"
+    # 2 "Fairly satisfied"
+    # 3 "Neither satisfied not dissatisfied"
+    # 4 "Fairly dissatisfied"
+    # 5 "Very dissatisfied"
+    
+    FPdata$satisfied <- ifelse(FPdata$c520 == 1 | FPdata$c520 == 2, 1, 0) # 35 missing
+  } else {
+    FPdata$satisfied <- ifelse(FPdata$c520 == 1 , 1, 0) # note that included surveys have between 3 and 37 missing
+  }
+  
+  # "Would recommend to friend/family member"
+  # label define C521    
+  # 0 "No"
+  # 1 "Yes"
+  # 8 "DK"
+  
+  FPdata$recommend <- NA
+  FPdata$recommend <- ifelse(
+    FPdata$c521 == 1, # note that included surveys have between 3 and 37 missing
+    1,
+    0
+  )
+  
+  # Composite Outcomes
+  
+  FPdata$satisfy_outcome <- NA
+  FPdata$satisfy_outcome <- ifelse(FPdata$recommend == 1 & FPdata$satisfied == 1, 1, 0)
+  
+  
+  FPdata$cp_outcome <- NA
+  FPdata$cp_outcome <- ifelse(FPdata$cp_sum >= 1, 1, 0)
+  
+  
   return(FPdata)
   
 }
