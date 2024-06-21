@@ -67,6 +67,10 @@ cleanIR <- function(dataset){
   dataset$femaleID <- NA
   dataset$femaleID <- paste0(dataset$v001, "_", dataset$v002, "_", dataset$v003)
   
+  # linking to OB data
+  dataset$obLinkID <- NA
+  dataset$obLinkID <- paste(dataset$v001, dataset$v002, dataset$v003, sep = "_")
+  
   ## consistent interview day
   dataset$intDay <- dataset$v008a
   ## consistent interview start time

@@ -25,6 +25,15 @@ cleanKR <- function(KRdata) {
   KRdata$femaleID <- NA
   KRdata$femaleID <- paste(KRdata$v001, KRdata$v002, KRdata$v003, sep="_")
   
+  # label variable v001     "Cluster number"
+  # label variable v002     "Household number"
+  # label variable v003     "Respondent's line number"
+  
+  # linking to OB data
+  KRdata$obLinkID <- NA
+  KRdata$obLinkID <- paste(KRdata$v001, KRdata$v002, KRdata$v003, sep = "_")
+  
+  
   
   # /*****************************************************************************************************
   # Program: 			  CH_ARI_FV.R
