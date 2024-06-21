@@ -174,7 +174,7 @@ cleanKR_foodIntake <- function(KRdata) {
     dairy_products_var <- c("cfood_milk", "cfood_formula", "cfood_milkProducts", "cfood_yogurt")
     flesh_foods_var <- c("cfood_meat", "cfood_organs", "cfood_fish")
     eggs_var <- "cfood_eggs"
-    vitamin_a_fruits_veg_var <- c("cfood_yelOrange", "cfood_dark_green_veg", "cfood_vA_fruits")
+    vitamin_a_fruits_veg_var <- c("cfood_yelOrange", "cfood_leafyGreen", "cfood_vA_fruits")
     other_fruits_veg_var <- c("cfood_ofruits", "cfood_other_liquid")
     
     # Create indicators for each food group

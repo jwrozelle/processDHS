@@ -41,6 +41,8 @@ cleanIR <- function(dataset){
   require(future)
   require(future.apply)
   require(uuid)
+  require(labelled)
+  require(naniar)
   
   # Set up a plan to use available cores (multicore) or sessions (multisession)
   # Adjust according to your specific needs
