@@ -1,3 +1,41 @@
+#' Clean and Process IR Dataset
+#'
+#' @description This function processes the given dataset by adding new variables and cleaning existing ones, particularly for demographic and health survey data. It handles missing values, computes new variables, and standardizes certain measures across different datasets.
+#'
+#' @param dataset A data frame containing the IR dataset to be cleaned and processed.
+#'
+#' @details
+#' The `cleanIR` function performs the following tasks:
+#' - Generates unique IDs for each row.
+#' - Formats the interview date.
+#' - Creates a unique ID for each female respondent.
+#' - Extracts and standardizes various interview-related variables (e.g., day, start time, end time, length).
+#' - Creates consistent IDs for fieldworkers and clusters.
+#' - Recodes age and education level variables.
+#' - Computes differences between fieldworker and respondent attributes.
+#' - Handles various indicators related to ever having sex, being in a union, and age differences.
+#' - Recodes wealth index variables.
+#' - Computes child and sibling mortality indicators.
+#' - Processes family planning variables.
+#' - Handles postnatal care indicators for women and newborns.
+#'
+#' @import future
+#' @import future.apply
+#' @import uuid
+#' @import naniar
+#' @import labelled
+#' @import matrixStats
+#' @import dplyr
+#'
+#' @return A data frame with the cleaned and processed IR dataset.
+#'
+#' @examples
+#' \dontrun{
+#'   clean_data <- cleanIR(raw_dataset)
+#' }
+#' @export
+
+
 cleanIR <- function(dataset){
   
   require(future)
