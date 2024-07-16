@@ -204,6 +204,11 @@ cleanKR_foodIntake <- function(KRdata) {
     KRdata$mdd_score6to23 <- ifelse(KRdata$dd_score >= 5, 1, 0)
     KRdata$mdd_score6to23 <- ifelse(KRdata$age <6 | KRdata$age > 23, NA, KRdata$mdd_score6to23)
     
+    # Meal frequency
+    KRdata$mealFreq <- NA
+    KRdata$mealFreq <- KRdata$m39
+    
+    
     
   }
   
