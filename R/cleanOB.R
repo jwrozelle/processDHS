@@ -94,6 +94,11 @@ cleanOB <- function(OBdata) {
   OBdata$vA_deficient <- NA
   OBdata$vA_deficient <- ifelse((OBdata$mn11ad / 1000) < 0.7, 1, 0)
   
+  
+  # # iron deficient
+  # OBdata$iron_deficient <- NA
+  # OBdata$iron_deficient <- ifelse(OBdata$mn04ad )
+  
   return(OBdata)
   
 }

@@ -140,16 +140,16 @@ cleanKR_chMicro <- function(KRdata) {
     set_value_labels(nt_ch_micro_dwm = c("Yes" = 1, "No"=0  )) %>%
     set_variable_labels(nt_ch_micro_dwm = "Children age 6-59 mos given deworming medication")
   
-  # //Child living in household with iodized salt 
-  KRdata <- KRdata %>%
-    mutate(nt_ch_micro_iod =
-             case_when(
-               age<6 | age>59 | b5==0 | hv234a>1  ~ 99,
-               hv234a==0   ~ 0, 
-               hv234a==1  ~ 1)) %>%
-    replace_with_na(replace = list(nt_ch_micro_iod = c(99))) %>%
-    set_value_labels(nt_ch_micro_iod = c("Yes" = 1, "No"=0  )) %>%
-    set_variable_labels(nt_ch_micro_iod = "Children age 6-59 mos live in hh with iodized salt")
+  # # //Child living in household with iodized salt 
+  # KRdata <- KRdata %>%
+  #   mutate(nt_ch_micro_iod =
+  #            case_when(
+  #              age<6 | age>59 | b5==0 | hv234a>1  ~ 99,
+  #              hv234a==0   ~ 0, 
+  #              hv234a==1  ~ 1)) %>%
+  #   replace_with_na(replace = list(nt_ch_micro_iod = c(99))) %>%
+  #   set_value_labels(nt_ch_micro_iod = c("Yes" = 1, "No"=0  )) %>%
+  #   set_variable_labels(nt_ch_micro_iod = "Children age 6-59 mos live in hh with iodized salt")
   
   # //Received therapeutic food
   KRdata <- KRdata %>%
