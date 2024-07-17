@@ -31,7 +31,7 @@ cleanKR <- function(KRdata) {
   
   # linking to OB data
   KRdata$obLinkID <- NA
-  KRdata$obLinkID <- paste(KRdata$v001, KRdata$v002, KRdata$v003, sep = "_")
+  KRdata$obLinkID <- paste(KRdata$v001, KRdata$v002, KRdata$b16, sep = "_")
   
   
   
