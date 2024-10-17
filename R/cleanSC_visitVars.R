@@ -326,7 +326,7 @@ cleanSC_visitVars <- function(SCdata) {
   SCdata$scProv_h <- ifelse(is.na(SCdata$scProv_h), NA, SCdata$scProv_h)
   
   # Convert anProv_h to a factor with appropriate labels
-  SCdata$anProv_h <- factor(SCdata$scProv_h, 
+  SCdata$scProv_h <- factor(SCdata$scProv_h, 
                             levels = c(0, 1, 2, 3),
                             labels = c("Medical Doctors", 
                                        "Advanced practice clinicians, paramedical", 
