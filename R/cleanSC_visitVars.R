@@ -278,48 +278,60 @@ cleanSC_visitVars <- function(SCdata) {
   # Harmonized provider (From Turcotte-Tremblay)
   SCdata$scProv_h <- NA
   
-  # Doctor, advanced practice clinician, paramedical
+  # Medical Doctors
   SCdata$scProv_h <- ifelse(SCdata$providerQual %in% c(
     "Generalist Medical Dr", 
     "Specialist Medical Dr", 
     "Pediatrician", 
+    "General surgeon", 
+    "Gynecologist"
+  ), 0, SCdata$scProv_h)
+  
+  # Advanced practice clinicians, paramedical professionals
+  SCdata$scProv_h <- ifelse(SCdata$providerQual %in% c(
     "Medical off (degree)", 
     "Clin off (degree)", 
     "Clin off (diploma)", 
+    "Clin off",
+    "Clin off (assistant)",
     "Medical assistant", 
-    "Assistant med officer", 
-    "Assistant Clinical Officer", 
-    "General surgeon", 
-    "Anesthetic assistant"
+    "Anesthetic assistant", 
+    "Assistant med officer"
   ), 1, SCdata$scProv_h)
   
   # Nurse, midwife
   SCdata$scProv_h <- ifelse(SCdata$providerQual %in% c(
     "Registered nurse (bsn)", 
     "Registered nurse midwife (bsn)", 
+    "Nurse or ANM", 
     "Enrolled nurse", 
-    "Enrolled nurse midwife", 
-    "Community Health Nurse", 
-    "Nurse", 
-    "Enrolled Midwife /Nurse Midwife Technical"
+    "Enrolled midwife", 
+    "Community midwife",
+    "Comm health nurse",
+    "Enrolled nurse midwife",
+    "Registered nurse (diploma)",
+    "Registered midwife"
   ), 2, SCdata$scProv_h)
   
   # Others—pharm, lab, dental, non-clinical
   SCdata$scProv_h <- ifelse(SCdata$providerQual %in% c(
     "Pharmacist", 
-    "Health Surveillance assistant", 
-    "Laboratory Scientist", 
-    "Laboratory Technologist", 
-    "Laboratory Technician", 
-    "Laboratory Assistant", 
     "Health assistant", 
-    "other", 
     "Other CHW", 
-    "Other"
+    "Nurse assistant", 
+    "other"
   ), 3, SCdata$scProv_h)
   
   # If the providerQual doesn't match any known values, categorize as "Unknown"
   SCdata$scProv_h <- ifelse(is.na(SCdata$scProv_h), NA, SCdata$scProv_h)
+  
+  # Convert anProv_h to a factor with appropriate labels
+  ANdata$anProv_h <- factor(ANdata$scProv_h, 
+                            levels = c(0, 1, 2, 3),
+                            labels = c("Medical Doctors", 
+                                       "Advanced practice clinicians, paramedical", 
+                                       "Nurse, midwife", 
+                                       "Others—pharm, lab, dental, non-clinical"))
   
   
   

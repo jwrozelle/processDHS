@@ -241,17 +241,19 @@ cleanAN_visitVars <- function(ANdata) {
     "Pediatrician", 
     "General surgeon", 
     "Gynecologist"
-  ), 1, ANdata$anProv_h)
+  ), 0, ANdata$anProv_h)
   
   # Advanced practice clinicians, paramedical professionals
   ANdata$anProv_h <- ifelse(ANdata$providerQual %in% c(
     "Medical off (degree)", 
     "Clin off (degree)", 
     "Clin off (diploma)", 
+    "Clin off",
+    "Clin off (assistant)",
     "Medical assistant", 
     "Anesthetic assistant", 
     "Assistant med officer"
-  ), 2, ANdata$anProv_h)
+  ), 1, ANdata$anProv_h)
   
   # Nurse, midwife
   ANdata$anProv_h <- ifelse(ANdata$providerQual %in% c(
@@ -260,8 +262,12 @@ cleanAN_visitVars <- function(ANdata) {
     "Nurse or ANM", 
     "Enrolled nurse", 
     "Enrolled midwife", 
-    "Community midwife"
-  ), 3, ANdata$anProv_h)
+    "Community midwife",
+    "Comm health nurse",
+    "Enrolled nurse midwife",
+    "Registered nurse (diploma)",
+    "Registered midwife"
+  ), 2, ANdata$anProv_h)
   
   # Others—pharm, lab, dental, non-clinical
   ANdata$anProv_h <- ifelse(ANdata$providerQual %in% c(
@@ -270,11 +276,11 @@ cleanAN_visitVars <- function(ANdata) {
     "Other CHW", 
     "Nurse assistant", 
     "other"
-  ), 4, ANdata$anProv_h)
+  ), 3, ANdata$anProv_h)
   
   # Convert anProv_h to a factor with appropriate labels
   ANdata$anProv_h <- factor(ANdata$anProv_h, 
-                            levels = c(1, 2, 3, 4),
+                            levels = c(0, 1, 2, 3),
                             labels = c("Medical Doctors", 
                                        "Advanced practice clinicians, paramedical", 
                                        "Nurse, midwife", 
