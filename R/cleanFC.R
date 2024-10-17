@@ -316,6 +316,61 @@ cleanFC <- function(FCdata) {
     stop(paste0("There is a problem with health facility type for survey ", FCdata$v000[1]))
   }
   
+  # Initialize type_h variable
+  FCdata$type_h <- NA
+  
+  # Hospitals (0)
+  FCdata$type_h <- ifelse(FCdata$type_category %in% c(
+    "regHosp", 
+    "provHosp", 
+    "specialHosp", 
+    "privHosp", 
+    "uniHosp", 
+    "deptHosp", 
+    "commRefHosp", 
+    "hospOther", 
+    "centralHosp", 
+    "distHosp", 
+    "commHosp", 
+    "nonGovHosp", 
+    "centralGovHosp", 
+    "regGovHosp", 
+    "subRegGovHosp", 
+    "zoneGovHosp", 
+    "distGovHosp", 
+    "otherPubHosp", 
+    "nationalRefHosp", 
+    "distDesigHosp", 
+    "otherHosp"
+  ), 0, FCdata$type_h)
+  
+  # Health centres (1)
+  FCdata$type_h <- ifelse(FCdata$type_category %in% c(
+    "privClinic", 
+    "healthCentLit", 
+    "healthCenterNoLit", 
+    "healthCenter", 
+    "maternity", 
+    "primaryhcc", 
+    "healthCentre", 
+    "UHC", 
+    "htc"
+  ), 1, FCdata$type_h)
+  
+  # Health posts and dispensaries (2)
+  FCdata$type_h <- ifelse(FCdata$type_category %in% c(
+    "disp", 
+    "healthPost", 
+    "subHealthPost", 
+    "dispCCS", 
+    "clinic", 
+    "hp"
+  ), 2, FCdata$type_h)
+  
+  # Convert type_h into a factor with levels 0-2 and appropriate labels
+  FCdata$type_h <- factor(FCdata$type_h, 
+                          levels = c(0, 1, 2),
+                          labels = c("Hospital", "Health centre", "Health post/dispensary"))
   
   
   # managing authority (country specific)
@@ -418,6 +473,35 @@ cleanFC <- function(FCdata) {
   } else {
     stop(paste0("There is a problem with health facility type for survey ", FCdata$v000[1]))
   }
+  
+  # Harmonize managing authority categories into auth_h using auth_category
+  FCdata$auth_h <- NA
+  
+  # Public (0)
+  FCdata$auth_h <- ifelse(FCdata$auth_category %in% c(
+    "govPublic", 
+    "parastatal"
+  ), 0, FCdata$auth_h)
+  
+  # Private not-for-profit (1)
+  FCdata$auth_h <- ifelse(FCdata$auth_category %in% c(
+    "privateNonProfit", 
+    "CHAM", 
+    "faith", 
+    "ngo", 
+    "mixed"
+  ), 1, FCdata$auth_h)
+  
+  # Private for-profit (2)
+  FCdata$auth_h <- ifelse(FCdata$auth_category %in% c(
+    "privateProfit", 
+    "company"
+  ), 2, FCdata$auth_h)
+  
+  # Convert auth_h into a factor with levels 0-2 and appropriate labels
+  FCdata$auth_h <- factor(FCdata$auth_h, 
+                          levels = c(0, 1, 2),
+                          labels = c("Public", "Private not-for-profit", "Private for-profit"))
   
   
   # Rural
