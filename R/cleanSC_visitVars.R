@@ -275,6 +275,53 @@ cleanSC_visitVars <- function(SCdata) {
     stop(paste0("The function has not been customized for ", SCdata$svyID[1]))
   }
   
+  # Harmonized provider (From Turcotte-Tremblay)
+  SCdata$scProv_h <- NA
+  
+  # Doctor, advanced practice clinician, paramedical
+  SCdata$scProv_h <- ifelse(SCdata$providerQual %in% c(
+    "Generalist Medical Dr", 
+    "Specialist Medical Dr", 
+    "Pediatrician", 
+    "Medical off (degree)", 
+    "Clin off (degree)", 
+    "Clin off (diploma)", 
+    "Medical assistant", 
+    "Assistant med officer", 
+    "Assistant Clinical Officer", 
+    "General surgeon", 
+    "Anesthetic assistant"
+  ), 1, SCdata$scProv_h)
+  
+  # Nurse, midwife
+  SCdata$scProv_h <- ifelse(SCdata$providerQual %in% c(
+    "Registered nurse (bsn)", 
+    "Registered nurse midwife (bsn)", 
+    "Enrolled nurse", 
+    "Enrolled nurse midwife", 
+    "Community Health Nurse", 
+    "Nurse", 
+    "Enrolled Midwife /Nurse Midwife Technical"
+  ), 2, SCdata$scProv_h)
+  
+  # Others—pharm, lab, dental, non-clinical
+  SCdata$scProv_h <- ifelse(SCdata$providerQual %in% c(
+    "Pharmacist", 
+    "Health Surveillance assistant", 
+    "Laboratory Scientist", 
+    "Laboratory Technologist", 
+    "Laboratory Technician", 
+    "Laboratory Assistant", 
+    "Health assistant", 
+    "other", 
+    "Other CHW", 
+    "Other"
+  ), 3, SCdata$scProv_h)
+  
+  # If the providerQual doesn't match any known values, categorize as "Unknown"
+  SCdata$scProv_h <- ifelse(is.na(SCdata$scProv_h), NA, SCdata$scProv_h)
+  
+  
   
   # Reason for visit
   #   Cough

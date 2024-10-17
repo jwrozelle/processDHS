@@ -107,7 +107,7 @@ cleanSC <- function(SCdata) {
   SCdata$child_female <- ifelse(SCdata$c023 == 1, 0, SCdata$child_female)
   SCdata$child_female <- ifelse(SCdata$c023 == 2, 1, SCdata$child_female)
   
-  # child gender
+  # provider gender
   SCdata$provider_female <- NA
   SCdata$provider_female <- ifelse(SCdata$c022 == 1, 0, SCdata$provider_female)
   SCdata$provider_female <- ifelse(SCdata$c022 == 2, 1, SCdata$provider_female)

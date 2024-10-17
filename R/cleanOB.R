@@ -91,13 +91,12 @@ cleanOB <- function(OBdata) {
   OBdata$vA_insufficient <- ifelse((OBdata$mn11ad / 1000) < 1.05, 1, 0)
   
   # Vitamin A deficiency
-  OBdata$vA_deficient <- NA
-  OBdata$vA_deficient <- ifelse((OBdata$mn11ad / 1000) < 0.7, 1, 0)
-  
+  OBdata$vA_deficient_ad <- NA
+  OBdata$vA_deficient_ad <- ifelse((OBdata$mn11ad / 1000) < 0.7, 1, 0)
   
   # # iron deficient
-  # OBdata$iron_deficient <- NA
-  # OBdata$iron_deficient <- ifelse(OBdata$mn04ad )
+  OBdata$iron_deficient <- NA
+  OBdata$iron_deficient <- ifelse(OBdata$mn04ad < 120, 1, 0)
   
   return(OBdata)
   
