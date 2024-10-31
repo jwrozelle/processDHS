@@ -370,7 +370,8 @@ cleanFC <- function(FCdata) {
   # Convert type_h into a factor with levels 0-2 and appropriate labels
   FCdata$type_h <- factor(FCdata$type_h, 
                           levels = c(0, 1, 2),
-                          labels = c("Hospital", "Health centre", "Health post/dispensary"))
+                          labels = c("Hospital", "Health centre", "Health post/dispensary"),
+                          drop = FALSE)
   
   
   # managing authority (country specific)
@@ -501,7 +502,8 @@ cleanFC <- function(FCdata) {
   # Convert auth_h into a factor with levels 0-2 and appropriate labels
   FCdata$auth_h <- factor(FCdata$auth_h, 
                           levels = c(0, 1, 2),
-                          labels = c("Public", "Private not-for-profit", "Private for-profit"))
+                          labels = c("Public", "Private not-for-profit", "Private for-profit"),
+                          drop = FALSE)
   
   
   # Rural
