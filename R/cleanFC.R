@@ -354,8 +354,7 @@ cleanFC <- function(FCdata) {
     "maternity", 
     "primaryhcc", 
     "healthCentre", 
-    "UHC", 
-    "htc"
+    "UHC"
   ), 1, FCdata$type_h)
   
   # Health posts and dispensaries (2)
@@ -365,7 +364,9 @@ cleanFC <- function(FCdata) {
     "subHealthPost", 
     "dispCCS", 
     "clinic", 
-    "hp"
+    "hp",
+    "htc",
+    "HTC"
   ), 2, FCdata$type_h)
   
   # Convert type_h into a factor with levels 0-2 and appropriate labels
