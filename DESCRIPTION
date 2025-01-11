@@ -16,5 +16,12 @@ Imports:
     future,
     future.apply,
     stringr,
-    iotools
-RoxygenNote: 7.3.1
+    iotools,
+    Hmisc,
+    FactoMineR,
+    norm,
+    visdat,
+    viridis,
+    UpSetR,
+    naniar
+RoxygenNote: 7.3.2

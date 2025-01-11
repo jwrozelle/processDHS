@@ -310,7 +310,8 @@ cleanSC_visitVars <- function(SCdata) {
     "Comm health nurse",
     "Enrolled nurse midwife",
     "Registered nurse (diploma)",
-    "Registered midwife"
+    "Registered midwife",
+    "Nurse"
   ), 2, SCdata$scProv_h)
   
   # Others—pharm, lab, dental, non-clinical
@@ -319,7 +320,8 @@ cleanSC_visitVars <- function(SCdata) {
     "Health assistant", 
     "Other CHW", 
     "Nurse assistant", 
-    "other"
+    "other",
+    "Anesthetic assistant",
   ), 3, SCdata$scProv_h)
   
   # If the providerQual doesn't match any known values, categorize as "Unknown"
