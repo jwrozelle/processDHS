@@ -286,6 +286,17 @@ cleanAN_visitVars <- function(ANdata) {
                                        "Nurse, midwife", 
                                        "Others—pharm, lab, dental, non-clinical"))
   
+  
+  
+  if (ANdata$svyID[1] == "AF_SPA18") {
+    
+    
+    
+  }
+  
+  
+  
+  
   return(ANdata)
   
   
