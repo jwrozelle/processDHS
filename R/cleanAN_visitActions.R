@@ -152,7 +152,7 @@ cleanAN_visitActions <- function(ANdata) {
     "pe_edema", # 7
     "pe_breasts", # 8
     "pe_vagExam", # 9
-    "pe_swollenGlands", # 10
+    "pe_swollenGlands" # 10
     # "pe_ultrasound",
     # "pe_fundalHeight"
   )
