@@ -5,7 +5,7 @@
 #' It also calculates the count and proportion of completed procedures.
 #'
 #' @param ANdata A `data.frame` containing the AN form data. Must include columns for 
-#' visit identification (`v000`) and individual procedures (`c106a` to `c106y`).
+#' visit identification (`c000`) and individual procedures (`c106a` to `c106y`).
 #' 
 #' @return A modified version of `ANdata` with added columns:
 #' \describe{
@@ -27,7 +27,7 @@
 #' }
 #'
 #' @details
-#' The function checks the country code (`v000`) and applies country-specific modifications:
+#' The function checks the country code (`c000`) and applies country-specific modifications:
 #' - If the dataset is from **Haiti (`HT7`) or Nepal (`NP7`)**, `pe_fundalHeight` is set to `NA`.
 #' - If the dataset is from an unsupported country, a warning is issued, and default processing is applied.
 #'
@@ -41,7 +41,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' ANdata <- data.frame(v000 = c("AF7", "HT7"), c106a = c(1, NA), c106b = c(1, 0), c106c = c(NA, 1))
+#' ANdata <- data.frame(c000 = c("AF7", "HT7"), c106a = c(1, NA), c106b = c(1, 0), c106c = c(NA, 1))
 #' cleanAN_visitActions(ANdata)
 #' }
 #'
@@ -63,7 +63,7 @@ cleanAN_visitActions <- function(ANdata) {
   # [1] "NP7"
   # [1] "TZ7"
   
-  if (ANdata$v000[1] %in% c("AF7", "HT7", "MW6", "NP7", "TZ7")) {
+  if (ANdata$c000[1] %in% c("AF7", "HT7", "MW6", "NP7", "TZ7")) {
     # label variable c106a    "Procedures performed:Blood pressure"
     ANdata$pe_bp <- ifelse(ANdata$c106a %in% 1, 1, 0)
     # label variable c106b    "Procedures performed:Palpate abdomen for fetal presentation"
@@ -88,12 +88,12 @@ cleanAN_visitActions <- function(ANdata) {
     ANdata$pe_ultrasound <- ifelse(ANdata$c106q %in% 1, 1, 0)
     # label variable c106r    "Procedures performed:Measure fundal height with a tape measure"
     ANdata$pe_fundalHeight <- ifelse(ANdata$c106r %in% 1, 1, 0) # 
-    ANdata$pe_fundalHeight <- ifelse(ANdata$v000[1] %in% c("HT7", "NP7"), NA, ANdata$pe_fundalHeight) # NA in haiti
+    ANdata$pe_fundalHeight <- ifelse(ANdata$c000[1] %in% c("HT7", "NP7"), NA, ANdata$pe_fundalHeight) # NA in haiti
     # label variable c106y    "Procedures performed:None of physical exam components"
     ANdata$pe_none <- ifelse(ANdata$c106y %in% 1, 1, 0)
   } else {
     
-    warning(paste0("The visitActions function has not been written for ", ANdata$v000[1]))
+    warning(paste0("The visitActions function has not been written for ", ANdata$c000[1]))
     
     # label variable c106a    "Procedures performed:Blood pressure"
     ANdata$pe_bp <- ifelse(ANdata$c106a %in% 1, 1, 0)
