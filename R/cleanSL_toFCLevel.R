@@ -95,7 +95,7 @@ cleanSL_toFCLevel <- function(SLdata) {
     SLdata_FCLevel <- SLdata %>% group_by(facID) %>% 
       summarise(mdoctor = sum(vu13 %in% c(2), na.rm = TRUE),
                 nurse_bsn = sum(vu13 %in% c(4), na.rm = TRUE), # does NOT include registered nurse with diploma, enrolled nurse, or psychiatric nurse
-                surgeon = sum((vu13 %in% c(2) & vu27 == 1), na.rm = T) # medical doctor that provides surgery
+                surgeon = NA # sum((vu13 %in% c(2) & vu27 == 1), na.rm = T) # This questionnaire doesn't ask about providing surgery
       )
   # Nepal 2015
   } else if (SLdata$svyID[1] == "NP_SPA15") {
