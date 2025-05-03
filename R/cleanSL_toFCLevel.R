@@ -104,6 +104,13 @@ cleanSL_toFCLevel <- function(SLdata) {
                 nurse_bsn = sum(vu13 %in% c(15), na.rm = TRUE), # Note that nepal has one label: NURSE/AUXILLARY NURSE MIDWIFE (ANM)
                 surgeon = sum((vu13 %in% c(1, 2, 3, 4, 5, 6, 8) & vu27 == 1) | (vu13 %in% c(5)), na.rm = T) # medical doctor that provides surgery
       )
+  # Nepal 2021
+  } else if (SLdata$svyID[1] == "NP_SPA21") {
+    SLdata_FCLevel <- SLdata %>% group_by(facID) %>% 
+      summarise(mdoctor = sum(vu13 %in% c(1:6, 8), na.rm = TRUE),
+                nurse_bsn = sum(vu13 %in% c(15), na.rm = TRUE), # Note that nepal has one label: NURSE/AUXILLARY NURSE MIDWIFE (ANM)
+                surgeon = sum((vu13 %in% c(1:6, 8) & vu27 == 1) | (vu13 %in% c(5)), na.rm = T) # medical doctor that provides surgery
+      )
   # Senegal 2012
   } else if (SLdata$svyID[1] == "SN_SPA12") {
     SLdata_FCLevel <- SLdata %>% group_by(facID) %>% 
