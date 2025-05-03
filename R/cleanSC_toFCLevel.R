@@ -4,6 +4,10 @@ cleanSC_toFCLevel <- function(SCdata) {
   
   require(dplyr)
   
+  if (!"facID" %in% names(SCdata)) {
+    SCdata$facID <- SCdata$inv_id
+  }
+  
   SC_FClevel.df <- SCdata %>%
     group_by(facID) %>%
     summarise(SC_num = n(),
