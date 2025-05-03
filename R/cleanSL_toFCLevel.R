@@ -90,6 +90,13 @@ cleanSL_toFCLevel <- function(SLdata) {
                 nurse_bsn = sum(vu13 %in% c(21, 22), na.rm = TRUE), # does NOT include registered nurse with diploma, enrolled nurse, or psychiatric nurse
                 surgeon = sum((vu13 %in% c(1,2) & vu27 == 1), na.rm = T) # medical doctor that provides surgery
       )
+  # Namibia 2009 (1)
+  } else if (SLdata$svyID[1] == "NM_SPA09") {
+    SLdata_FCLevel <- SLdata %>% group_by(facID) %>% 
+      summarise(mdoctor = sum(vu13 %in% c(2), na.rm = TRUE),
+                nurse_bsn = sum(vu13 %in% c(4), na.rm = TRUE), # does NOT include registered nurse with diploma, enrolled nurse, or psychiatric nurse
+                surgeon = sum((vu13 %in% c(2) & vu27 == 1), na.rm = T) # medical doctor that provides surgery
+      )
   # Nepal 2015
   } else if (SLdata$svyID[1] == "NP_SPA15") {
     SLdata_FCLevel <- SLdata %>% group_by(facID) %>% 
@@ -97,7 +104,13 @@ cleanSL_toFCLevel <- function(SLdata) {
                 nurse_bsn = sum(vu13 %in% c(15), na.rm = TRUE), # Note that nepal has one label: NURSE/AUXILLARY NURSE MIDWIFE (ANM)
                 surgeon = sum((vu13 %in% c(1, 2, 3, 4, 5, 6, 8) & vu27 == 1) | (vu13 %in% c(5)), na.rm = T) # medical doctor that provides surgery
       )
-    
+  # Senegal 2012
+  } else if (SLdata$svyID[1] == "SN_SPA12") {
+    SLdata_FCLevel <- SLdata %>% group_by(facID) %>% 
+      summarise(mdoctor = sum(vu13 %in% c(1, 2), na.rm = TRUE),
+                nurse_bsn = sum(vu13 %in% c(21), na.rm = TRUE), # Note that nepal has one label: NURSE/AUXILLARY NURSE MIDWIFE (ANM)
+                surgeon = sum((vu13 %in% c(1, 2, 3, 4, 5, 6, 8) & vu27 == 1) | (vu13 %in% c(5)), na.rm = T) # medical doctor that provides surgery
+      )
   # Tanzania 2014
   } else if (SLdata$svyID[1] == "TZ_SPA14") {
     SLdata_FCLevel <- SLdata %>% group_by(facID) %>% 
