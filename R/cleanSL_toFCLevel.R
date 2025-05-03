@@ -124,27 +124,53 @@ cleanSL_toFCLevel <- function(SLdata) {
   }
   
   # Count of providers who deliver service
-  providerCounts <- SLdata %>% group_by(facID) %>%
-    summarise(
-      pv_svc_art_count = sum(vu14 %in% c(1), na.rm = T), # label variable vu14     "Provides ART"
-      pv_svc_hivCareSupport_count = sum(vu15 %in% c(1), na.rm = T), # label variable vu15     "Provides HIV counseling/testing"
-      pv_svc_hivTesting_count = sum(vu16 %in% c(1), na.rm = T), # label variable vu16     "Provides HIV related"
-      pv_svc_malariaTBSTIDxTx_count = sum(vu15 %in% c(1), na.rm = T), # label variable vu17     "Provides any malaria STI TB dx/tx"
-      pv_svc_malariaDxTx_count = sum(vu17a %in% c(1), na.rm = T), # label variable vu17a    "Provides malaria dx/tx"
-      pv_svc_tbDxTx_count = sum(vu17b %in% c(1), na.rm = T), # label variable vu17b    "Provides TB dx/tx"
-      pv_svc_stiDxTx_count = sum(vu17c %in% c(1), na.rm = T), # label variable vu17c    "Provides STI dx/tx"
-      pv_svc_nonCommDisease_count = sum(vu17d %in% c(1), na.rm = T), # label variable vu17d    "Provides non-communicable disease dx/tx"
-      pv_svc_rh_count = sum(vu18 %in% c(1), na.rm = T), # label variable vu18     "Provides any ANC/FP/Delivery"
-      pv_svc_other_count = sum(vu19 %in% c(1), na.rm = T), # label variable vu19     "Provides other client services"
-      pv_svc_labDiagnostic_count = sum(vu20 %in% c(1), na.rm = T), # label variable vu20     "Conducts lab tests"
-      # pv_XXXX_count = sum(vu21 %in% c(1), na.rm = T), # label variable vu21     "Individual interview attempted"
-      pv_svc_antenatalCare_count = sum(vu22 %in% c(1), na.rm = T), # label variable vu22     "Provides ANC care"
-      pv_svc_pmtct_count = sum(vu23 %in% c(1), na.rm = T), # label variable vu23     "Provides PMTCT care"
-      pv_svc_normalDelivery_count = sum(vu24 %in% c(1), na.rm = T), # label variable vu24     "Provides Delivery care"
-      pv_svc_familyPlanning_count = sum(vu25 %in% c(1), na.rm = T), # label variable vu25     "Provides FP care"
-      pv_svc_curativeCareChild_count = sum(vu26 %in% c(1), na.rm = T), # label variable vu26     "Provides Child health care"
-      pv_svc_surgery_count = sum(vu27 %in% c(1), na.rm = T), # label variable vu27     "Provides surgery"
-    )
+  if (!SLdata$svyID[1] %in% "NM_SPA09") {
+    providerCounts <- SLdata %>% group_by(facID) %>%
+      summarise(
+        pv_svc_art_count = sum(vu14 %in% c(1), na.rm = T), # label variable vu14     "Provides ART"
+        pv_svc_hivCareSupport_count = sum(vu15 %in% c(1), na.rm = T), # label variable vu15     "Provides HIV counseling/testing"
+        pv_svc_hivTesting_count = sum(vu16 %in% c(1), na.rm = T), # label variable vu16     "Provides HIV related"
+        pv_svc_malariaTBSTIDxTx_count = sum(vu15 %in% c(1), na.rm = T), # label variable vu17     "Provides any malaria STI TB dx/tx"
+        pv_svc_malariaDxTx_count = sum((vu17a %in% c(1) & !svyID %in% "NM_SPA09") | (svyID %in% "NM_SPA09" & vu17 %in% c(1)), na.rm = T), # label variable vu17a    "Provides malaria dx/tx"
+        pv_svc_tbDxTx_count = sum(vu17b %in% c(1), na.rm = T), # label variable vu17b    "Provides TB dx/tx"
+        pv_svc_stiDxTx_count = sum(vu17c %in% c(1), na.rm = T), # label variable vu17c    "Provides STI dx/tx"
+        pv_svc_nonCommDisease_count = sum(vu17d %in% c(1), na.rm = T), # label variable vu17d    "Provides non-communicable disease dx/tx"
+        pv_svc_rh_count = sum(vu18 %in% c(1), na.rm = T), # label variable vu18     "Provides any ANC/FP/Delivery"
+        pv_svc_other_count = sum(vu19 %in% c(1), na.rm = T), # label variable vu19     "Provides other client services"
+        pv_svc_labDiagnostic_count = sum(vu20 %in% c(1), na.rm = T), # label variable vu20     "Conducts lab tests"
+        # pv_XXXX_count = sum(vu21 %in% c(1), na.rm = T), # label variable vu21     "Individual interview attempted"
+        pv_svc_antenatalCare_count = sum(vu22 %in% c(1), na.rm = T), # label variable vu22     "Provides ANC care"
+        pv_svc_pmtct_count = sum(vu23 %in% c(1), na.rm = T), # label variable vu23     "Provides PMTCT care"
+        pv_svc_normalDelivery_count = sum(vu24 %in% c(1), na.rm = T), # label variable vu24     "Provides Delivery care"
+        pv_svc_familyPlanning_count = sum(vu25 %in% c(1), na.rm = T), # label variable vu25     "Provides FP care"
+        pv_svc_curativeCareChild_count = sum(vu26 %in% c(1), na.rm = T), # label variable vu26     "Provides Child health care"
+        pv_svc_surgery_count = sum(vu27 %in% c(1), na.rm = T), # label variable vu27     "Provides surgery"
+      )
+  } else {
+    providerCounts <- SLdata %>% group_by(facID) %>%
+      summarise(
+        pv_svc_art_count = sum(vu14 %in% c(1), na.rm = T), # label variable vu14     "Provides ART"
+        pv_svc_hivCareSupport_count = sum(vu15 %in% c(1), na.rm = T), # label variable vu15     "Provides HIV counseling/testing"
+        pv_svc_hivTesting_count = sum(vu16 %in% c(1), na.rm = T), # label variable vu16     "Provides HIV related"
+        pv_svc_malariaTBSTIDxTx_count = sum(vu15 %in% c(1), na.rm = T), # label variable vu17     "Provides any malaria STI TB dx/tx"
+        pv_svc_malariaDxTx_count = sum(vu17 %in% c(1), na.rm = T), # label variable vu17a    "Provides malaria dx/tx"
+        pv_svc_tbDxTx_count = sum(vu17 %in% c(1), na.rm = T), # label variable vu17b    "Provides TB dx/tx"
+        pv_svc_stiDxTx_count = sum(vu17 %in% c(1), na.rm = T), # label variable vu17c    "Provides STI dx/tx"
+        pv_svc_nonCommDisease_count = NA, # sum(vu17d %in% c(1), na.rm = T), # label variable vu17d    "Provides non-communicable disease dx/tx"
+        pv_svc_rh_count = sum(vu18 %in% c(1), na.rm = T), # label variable vu18     "Provides any ANC/FP/Delivery"
+        pv_svc_other_count = sum(vu19 %in% c(1), na.rm = T), # label variable vu19     "Provides other client services"
+        pv_svc_labDiagnostic_count = sum(vu20 %in% c(1), na.rm = T), # label variable vu20     "Conducts lab tests"
+        # pv_XXXX_count = sum(vu21 %in% c(1), na.rm = T), # label variable vu21     "Individual interview attempted"
+        pv_svc_antenatalCare_count = NA,# sum(vu22 %in% c(1), na.rm = T), # label variable vu22     "Provides ANC care"
+        pv_svc_pmtct_count = NA, # sum(vu23 %in% c(1), na.rm = T), # label variable vu23     "Provides PMTCT care"
+        pv_svc_normalDelivery_count = NA, # sum(vu24 %in% c(1), na.rm = T), # label variable vu24     "Provides Delivery care"
+        pv_svc_familyPlanning_count = NA, # sum(vu25 %in% c(1), na.rm = T), # label variable vu25     "Provides FP care"
+        pv_svc_curativeCareChild_count = NA, # sum(vu26 %in% c(1), na.rm = T), # label variable vu26     "Provides Child health care"
+        pv_svc_surgery_count = NA# sum(vu27 %in% c(1), na.rm = T), # label variable vu27     "Provides surgery"
+      )
+  }
+  
+
   
   if(nrow(SLdata_FCLevel) != nrow(providerCounts)) {
     warning("There seems to be incomplete data for part of the SL data. Double check output before merging.")
