@@ -39,8 +39,36 @@ cleanSL_toFCLevel <- function(SLdata) {
     SLdata$facID <- SLdata$inv_id
   }
   
+  # Afghanistan 2018
+  if (SLdata$svyID[1] == "AF_SPA18") {
+    SLdata_FCLevel <- SLdata %>% group_by(facID) %>% 
+      summarise(mdoctor = sum(vu13 %in% c(1, 2), na.rm = TRUE), # 1 Genearlist, 2 Specialist medical doctor
+                nurse_bsn = sum(vu13 %in% c(22), na.rm = TRUE), # does not include registered nurse with diploma, or community nurse
+                surgeon = sum((vu13 %in% c(1,2) & vu27 == 1), na.rm = T) # medical doctor that provides surgery
+      )
+  # Bangladesh 2017
+  } else if (SLdata$svyID[1] == "BD_SPA17") {
+    SLdata_FCLevel <- SLdata %>% group_by(facID) %>% 
+      summarise(mdoctor = sum(vu13 %in% c(1:6), na.rm = TRUE),
+                nurse_bsn = sum(vu13 %in% c(22, 23, 24, 26), na.rm=TRUE), 
+                surgeon = sum(vu13 %in% c(1:6) & vu27 == 1, na.rm=TRUE)
+      )
+  # # Congo Democratic Republic 2017-18
+  # } else if (SLdata$svyID[1] == "CD_SPA17") {
+  #   SLdata_FCLevel <- SLdata %>% group_by(facID) %>% 
+  #     summarise(mdoctor = sum(vu13 %in% c(1:6), na.rm = TRUE),
+  #               nurse_bsn = sum(vu13 %in% c(22, 23, 24, 26), na.rm=TRUE), 
+  #               surgeon = sum(vu13 %in% c(1:6) & vu27 == 1, na.rm=TRUE)
+  #     )
+  # Ethiopia 2021-22
+  } else if (SLdata$svyID[1] == "ET_SPA21") {
+    SLdata_FCLevel <- SLdata %>% group_by(facID) %>% 
+      summarise(mdoctor = sum(vu13 %in% c(1:2), na.rm = TRUE),
+                nurse_bsn = sum(vu13 %in% c(21:23), na.rm=TRUE), # does not include registered nurse with diploma
+                surgeon = sum(vu13 %in% c(1:2) & vu27 == 1, na.rm=TRUE)
+      )
   # Haiti 2017
-  if (SLdata$svyID[1] == "HT_SPA17") {
+  } else if (SLdata$svyID[1] == "HT_SPA17") {
     SLdata_FCLevel <- SLdata %>% group_by(facID) %>% 
       summarise(mdoctor = sum(vu13 %in% c(1, 2), na.rm = TRUE),
                 nurse_bsn = sum(vu13 %in% c(21, 22 ,24), na.rm=TRUE), # does not include auxiliary nurses / medical assistants
@@ -54,14 +82,6 @@ cleanSL_toFCLevel <- function(SLdata) {
                 nurse_bsn = sum(vu13 %in% c(21, 22), na.rm = TRUE), # does not include auxiliary nurses / medical assistants
                 surgeon = sum((vu13 %in% c(1,3) & vu27 == 1) | (vu13 %in% c(2)), na.rm=TRUE), # medical doctor that provides surgery
                 surgeon2 = sum(vu13 == 2, na.rm = TRUE)
-      )
-    
-  # Afghanistan 2018
-  } else if (SLdata$svyID[1] == "AF_SPA18") {
-    SLdata_FCLevel <- SLdata %>% group_by(facID) %>% 
-      summarise(mdoctor = sum(vu13 %in% c(1, 2), na.rm = TRUE), # 1 Genearlist, 2 Specialist medical doctor
-                nurse_bsn = sum(vu13 %in% c(22), na.rm = TRUE), # does not include registered nurse with diploma, or community nurse
-                surgeon = sum((vu13 %in% c(1,2) & vu27 == 1), na.rm = T) # medical doctor that provides surgery
       )
   # Malawi 2013-14
   } else if (SLdata$svyID[1] == "MW_SPA13") {

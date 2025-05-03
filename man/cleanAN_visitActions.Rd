@@ -8,7 +8,7 @@ cleanAN_visitActions(ANdata)
 }
 \arguments{
 \item{ANdata}{A `data.frame` containing the AN form data. Must include columns for 
-visit identification (`v000`) and individual procedures (`c106a` to `c106y`).}
+visit identification (`c000`) and individual procedures (`c106a` to `c106y`).}
 }
 \value{
 A modified version of `ANdata` with added columns:
@@ -36,7 +36,7 @@ This function processes visit action data in the Service Provision Assessment (S
 It also calculates the count and proportion of completed procedures.
 }
 \details{
-The function checks the country code (`v000`) and applies country-specific modifications:
+The function checks the country code (`c000`) and applies country-specific modifications:
 - If the dataset is from **Haiti (`HT7`) or Nepal (`NP7`)**, `pe_fundalHeight` is set to `NA`.
 - If the dataset is from an unsupported country, a warning is issued, and default processing is applied.
 
@@ -50,7 +50,7 @@ examination actions performed during an antenatal care visit.
 }
 \examples{
 \dontrun{
-ANdata <- data.frame(v000 = c("AF7", "HT7"), c106a = c(1, NA), c106b = c(1, 0), c106c = c(NA, 1))
+ANdata <- data.frame(c000 = c("AF7", "HT7"), c106a = c(1, NA), c106b = c(1, 0), c106c = c(NA, 1))
 cleanAN_visitActions(ANdata)
 }
 
