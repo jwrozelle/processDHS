@@ -271,6 +271,98 @@ cleanSC_visitVars <- function(SCdata) {
     SCdata$scProv_other <- NA
     SCdata$scProv_other <- ifelse(SCdata$providerCode %in% c(96), 1, 0)
     
+  } else if (SCdata$svyID[1] == "ET_SPA21") {
+    
+    # 1 "General Practitioner"
+    # 2 "MD Specialist: General Surgeon"
+    # 4 "MD Specialist: Obstetrician and Gynaecologist"
+    # 5 "MD Specialist: Internist"
+    # 6 "MD Specialist: Pediatrician"
+    # 7 "MD Psychiatrist"
+    # 9 "Other MD Specialist, including service Specialist"
+    # 10 "Health Officer"
+    # 21 "Nurse (Diploma)"
+    # 22 "Nurse (Bsc)"
+    # 23 "Public Health Nurse"
+    # 24 "Midwifes (Bsc)"
+    # 25 "Midwifes (Diploma)"
+    # 26 "Specialized Nurse including Neonatology, etc."
+    # 35 "Msc in Medical Laboratory"
+    # 36 "Laboratory Technologist"
+    # 37 "Laboratory Technician"
+    # 38 "Microbiologist"
+    # 41 "Integrated Emergency Surgical Office (IESO)"
+    # 42 "Bio-medical Engineer"
+    # 71 "Health Extension Worker Level 3"
+    # 72 "Health Extension Worker Level 4"
+    # 96 "Other clinical staff not listed above"
+    # 97 "No Technical Qualification/non clinical staff"
+    # 99 "Missing"
+    
+    # providerQual labels
+    SCdata$providerQual <- NA
+    SCdata$providerQual <- ifelse(SCdata$providerCode == 1, "Generalist Medical Dr", SCdata$providerQual)
+    SCdata$providerQual <- ifelse(SCdata$providerCode == 2, "General surgeon", SCdata$providerQual)
+    SCdata$providerQual <- ifelse(SCdata$providerCode == 4, "Gynecologist", SCdata$providerQual)
+    SCdata$providerQual <- ifelse(SCdata$providerCode == 5, "internistMD", SCdata$providerQual)
+    SCdata$providerQual <- ifelse(SCdata$providerCode == 6, "Pediatrician", SCdata$providerQual)
+    SCdata$providerQual <- ifelse(SCdata$providerCode == 7, "MD Psychiatrist", SCdata$providerQual)
+    SCdata$providerQual <- ifelse(SCdata$providerCode == 9, "Specialist Medical Dr", SCdata$providerQual)
+    SCdata$providerQual <- ifelse(SCdata$providerCode == 10, "Health Officer", SCdata$providerQual)
+    SCdata$providerQual <- ifelse(SCdata$providerCode == 21, "Nurse (Diploma)", SCdata$providerQual)
+    SCdata$providerQual <- ifelse(SCdata$providerCode == 22, "Nurse (BSc)", SCdata$providerQual)
+    SCdata$providerQual <- ifelse(SCdata$providerCode == 23, "Public Health Nurse", SCdata$providerQual)
+    SCdata$providerQual <- ifelse(SCdata$providerCode == 24, "Midwife (BSc)", SCdata$providerQual)
+    SCdata$providerQual <- ifelse(SCdata$providerCode == 25, "Midwife (Diploma)", SCdata$providerQual)
+    SCdata$providerQual <- ifelse(SCdata$providerCode == 26, "Specialized Nurse", SCdata$providerQual)
+    SCdata$providerQual <- ifelse(SCdata$providerCode == 35, "MSc in Medical Laboratory", SCdata$providerQual)
+    SCdata$providerQual <- ifelse(SCdata$providerCode == 36, "Laboratory Technologist", SCdata$providerQual)
+    SCdata$providerQual <- ifelse(SCdata$providerCode == 37, "Laboratory Technician", SCdata$providerQual)
+    SCdata$providerQual <- ifelse(SCdata$providerCode == 38, "Microbiologist", SCdata$providerQual)
+    SCdata$providerQual <- ifelse(SCdata$providerCode == 41, "Integrated Emergency Surgical Officer (IESO)", SCdata$providerQual)
+    SCdata$providerQual <- ifelse(SCdata$providerCode == 42, "Bio-medical Engineer", SCdata$providerQual)
+    SCdata$providerQual <- ifelse(SCdata$providerCode == 71, "Health Extension Worker (L3)", SCdata$providerQual)
+    SCdata$providerQual <- ifelse(SCdata$providerCode == 72, "Health Extension Worker (L4)", SCdata$providerQual)
+    SCdata$providerQual <- ifelse(SCdata$providerCode == 96, "Other clinical staff", SCdata$providerQual)
+    SCdata$providerQual <- ifelse(SCdata$providerCode == 97, "No Technical Qualification", SCdata$providerQual)
+    SCdata$providerQual <- ifelse(SCdata$providerCode == 99, "Missing", SCdata$providerQual)
+    
+    # provider dummy variables
+    # General Practitioner
+    SCdata$scProv_genMD <- NA
+    SCdata$scProv_genMD <- ifelse(SCdata$providerCode %in% 1, 1, 0)
+    
+    # MD Specialists (general surgeon, OBGYN, internist, pediatrician, psychiatrist, other specialist)
+    SCdata$scProv_specMD <- NA
+    SCdata$scProv_specMD <- ifelse(SCdata$providerCode %in% c(2,4,5,6,7,9), 1, 0)
+    
+    # Pediatrician specifically
+    SCdata$scProv_pediatrcianMD <- NA
+    SCdata$scProv_pediatrcianMD <- ifelse(SCdata$providerCode %in% 6, 1, 0)
+    
+    # Nurses (Diploma, BSc, Public Health Nurse, Specialized Nurse)
+    SCdata$scProv_nurse <- NA
+    SCdata$scProv_nurse <- ifelse(SCdata$providerCode %in% c(21,22,23,26), 1, 0)
+    
+    # Midwives (BSc or Diploma)
+    SCdata$scProv_midwife <- NA
+    SCdata$scProv_midwife <- ifelse(SCdata$providerCode %in% c(24,25), 1, 0)
+    
+    # Health Officer
+    SCdata$scProv_healthOfficer <- NA
+    SCdata$scProv_healthOfficer <- ifelse(SCdata$providerCode %in% 10, 1, 0)
+    
+    # Health Extension Workers
+    SCdata$scProv_HEW <- NA
+    SCdata$scProv_HEW <- ifelse(SCdata$providerCode %in% c(71,72), 1, 0)
+    
+    # Other
+    SCdata$scProv_other <- NA
+    SCdata$scProv_other <- ifelse(SCdata$providerCode %in% c(35,36,37,38,41,42,96,97,99), 1, 0)
+    
+    
+    
+    
   } else {
     stop(paste0("The function has not been customized for ", SCdata$svyID[1]))
   }
@@ -284,7 +376,10 @@ cleanSC_visitVars <- function(SCdata) {
     "Specialist Medical Dr", 
     "Pediatrician", 
     "General surgeon", 
-    "Gynecologist"
+    "Gynecologist",
+    "General Practitioner",
+    "MD Psychiatrist",
+    "internistMD"
   ), 0, SCdata$scProv_h)
   
   # Advanced practice clinicians, paramedical professionals
@@ -296,7 +391,9 @@ cleanSC_visitVars <- function(SCdata) {
     "Clin off (assistant)",
     "Medical assistant", 
     "Anesthetic assistant", 
-    "Assistant med officer"
+    "Assistant med officer",
+    "Health Officer",
+    "Integrated Emergency Surgical Officer (IESO)"
   ), 1, SCdata$scProv_h)
   
   # Nurse, midwife
@@ -311,7 +408,14 @@ cleanSC_visitVars <- function(SCdata) {
     "Enrolled nurse midwife",
     "Registered nurse (diploma)",
     "Registered midwife",
-    "Nurse"
+    "Nurse",
+    # Ethiopia-specific
+    "Nurse (Diploma)",
+    "Nurse (BSc)",
+    "Public Health Nurse",
+    "Midwife (BSc)",
+    "Midwife (Diploma)",
+    "Specialized Nurse"
   ), 2, SCdata$scProv_h)
   
   # Others—pharm, lab, dental, non-clinical
@@ -321,7 +425,18 @@ cleanSC_visitVars <- function(SCdata) {
     "Other CHW", 
     "Nurse assistant", 
     "other",
-    "Anesthetic assistant"
+    "Anesthetic assistant",
+    # Ethiopia lab/other cadres
+    "MSc in Medical Laboratory",
+    "Laboratory Technologist",
+    "Laboratory Technician",
+    "Microbiologist",
+    "Bio-medical Engineer",
+    "Health Extension Worker (L3)",
+    "Health Extension Worker (L4)",
+    "Other clinical staff",
+    "No Technical Qualification",
+    "Missing"
   ), 3, SCdata$scProv_h)
   
   # If the providerQual doesn't match any known values, categorize as "Unknown"
@@ -442,6 +557,26 @@ cleanSC_visitVars <- function(SCdata) {
                                 SCdata$c256x %in% c(1), 
                               1, 0)
     
+    
+  } else if (SCdata$svyID[1] == "ET_SPA21") {
+    
+    # label variable c256a    "Other reason for visit: Eye problems"
+    # label variable c256b    "Other reason for visit: Skin sore"
+    # label variable c256c    "Other reason for visit: Injury"
+    # label variable c256d    "Other reason for visit: Ear problem"
+    # label variable c256e    "Other reason for visit: Cough (CS)"
+    # label variable c256x    "Other reason for visit: Other"
+    # label variable c256y    "Other reason for visit: No other reason"
+    
+    SCdata$sc_other <- ifelse(
+      SCdata$c256a %in% c(1) |
+        SCdata$c256b %in% c(1) |
+        SCdata$c256c %in% c(1) |
+        SCdata$c256d %in% c(1) |
+        SCdata$c256e %in% c(1) |
+        SCdata$c256x %in% c(1),
+      1, 0
+    )
     
   } else {
     stop(paste0("Error processing sc_other for svyID ", SCdata$svyID[1]))
