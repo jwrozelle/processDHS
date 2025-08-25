@@ -366,6 +366,88 @@ cleanFC <- function(FCdata) {
     FCdata$typeDHS_category <- ifelse(FCdata$typeDHS_lowClinic == 1,      "Lower clinic",                FCdata$typeDHS_category)
     
     
+  } else if (FCdata$v000[1] == "BD7") {    
+    
+    # label define V007    
+    # 1 "District Hospital (DH)"
+    # 2 "Upazila Health Complex (UHC)"
+    # 3 "Mother and Child Welfare Center (MCWC)"
+    # 4 "Union Health and Family Welfare Center (UnHFWC)"
+    # 5 "Union Health and Family Welfare Center (UnHFWC - Upgraded)"
+    # 6 "Union Subcenter (UnSC) / Rural Dispensary"
+    # 8 "Community Clinic"
+    # 9 "NGO Clinic (other than Smiling Sun Clinics)"
+    # 10 "Private Hospital (with >20 beds)"
+    # 11 "NGO Hospital"
+    # 12 "Smiling Sun Clinic of NGO Health Service Delivery Project (NHSDP)"
+    
+    
+    ## specific type dummies
+    FCdata$type_dh     <- ifelse(FCdata$v007 %in% 1, 1, 0)
+    FCdata$type_uhc    <- ifelse(FCdata$v007 %in% 2, 1, 0)
+    FCdata$type_mcwc   <- ifelse(FCdata$v007 %in% 3, 1, 0)
+    FCdata$type_uhfwc  <- ifelse(FCdata$v007 %in% c(4,5), 1, 0)
+    FCdata$type_usc    <- ifelse(FCdata$v007 %in% 6, 1, 0)
+    FCdata$type_cc     <- ifelse(FCdata$v007 %in% 8, 1, 0)
+    FCdata$type_ngocln <- ifelse(FCdata$v007 %in% 9, 1, 0)
+    FCdata$type_privh  <- ifelse(FCdata$v007 %in% 10, 1, 0)
+    FCdata$type_ngoh   <- ifelse(FCdata$v007 %in% 11, 1, 0)
+    FCdata$type_suncln <- ifelse(FCdata$v007 %in% 12, 1, 0)
+    
+    ## single string
+    FCdata$type_category <- NA
+    FCdata$type_category <- ifelse(FCdata$type_dh == 1,     "dh",     FCdata$type_category)
+    FCdata$type_category <- ifelse(FCdata$type_uhc == 1,    "uhc",    FCdata$type_category)
+    FCdata$type_category <- ifelse(FCdata$type_mcwc == 1,   "mcwc",   FCdata$type_category)
+    FCdata$type_category <- ifelse(FCdata$type_uhfwc == 1,  "uhfwc",  FCdata$type_category)
+    FCdata$type_category <- ifelse(FCdata$type_usc == 1,    "usc",    FCdata$type_category)
+    FCdata$type_category <- ifelse(FCdata$type_cc == 1,     "cc",     FCdata$type_category)
+    FCdata$type_category <- ifelse(FCdata$type_ngocln == 1, "ngocln", FCdata$type_category)
+    FCdata$type_category <- ifelse(FCdata$type_privh == 1,  "privh",  FCdata$type_category)
+    FCdata$type_category <- ifelse(FCdata$type_ngoh == 1,   "ngoh",   FCdata$type_category)
+    FCdata$type_category <- ifelse(FCdata$type_suncln == 1, "suncln", FCdata$type_category)
+    
+    
+    # DHS Categories
+    # District and upazila public facilities
+    #   DH
+    #   MCWC
+    #   UHC 
+    # Union-level public facilities 
+    #   UHFWC 
+    #   USC/RD 
+    # Community clinic (CC) 
+    # NGO clinic/hospital 
+    # Private hospital
+    
+    ## DHS groupings (short single-word labels)
+    ## DHS categories (granular, single-word)
+    #     District and upazila public facilities
+    FCdata$typeDHS_dh     <- ifelse(FCdata$v007 %in% 1,          1, 0)       # District Hospital
+    FCdata$typeDHS_mcwc   <- ifelse(FCdata$v007 %in% 3,          1, 0)       # MCWC
+    FCdata$typeDHS_uhc    <- ifelse(FCdata$v007 %in% 2,          1, 0)       # UHC
+    #     Union-level public facilities
+    FCdata$typeDHS_uhfwc  <- ifelse(FCdata$v007 %in% c(4, 5),    1, 0)       # UHFWC (std + upgraded)
+    FCdata$typeDHS_uscrd  <- ifelse(FCdata$v007 %in% 6,          1, 0)       # USC/RD
+    # community clinic
+    FCdata$typeDHS_cc     <- ifelse(FCdata$v007 %in% 8,          1, 0)       # Community clinic
+    # NGO clinic/hospital
+    FCdata$typeDHS_ngoclnHosp <- ifelse(FCdata$v007 %in% c(9,11,12), 1, 0)       # NGO clinic/hospital (+ Smiling Sun)
+    # Private hospital
+    FCdata$typeDHS_privh  <- ifelse(FCdata$v007 %in% 10,         1, 0)       # Private hospital
+    
+    FCdata$typeDHS_category <- NA
+    FCdata$typeDHS_category <- ifelse(FCdata$typeDHS_dh     == 1, "dh",     FCdata$typeDHS_category)
+    FCdata$typeDHS_category <- ifelse(FCdata$typeDHS_mcwc   == 1, "mcwc",   FCdata$typeDHS_category)
+    FCdata$typeDHS_category <- ifelse(FCdata$typeDHS_uhc    == 1, "uhc",    FCdata$typeDHS_category)
+    FCdata$typeDHS_category <- ifelse(FCdata$typeDHS_uhfwc  == 1, "uhfwc",  FCdata$typeDHS_category)
+    FCdata$typeDHS_category <- ifelse(FCdata$typeDHS_uscrd  == 1, "uscrd",  FCdata$typeDHS_category)
+    FCdata$typeDHS_category <- ifelse(FCdata$typeDHS_cc     == 1, "cc",     FCdata$typeDHS_category)
+    FCdata$typeDHS_category <- ifelse(FCdata$typeDHS_ngoclnHosp == 1, "ngoclnHosp", FCdata$typeDHS_category)
+    FCdata$typeDHS_category <- ifelse(FCdata$typeDHS_privh  == 1, "privh",  FCdata$typeDHS_category)
+    
+    
+    
   } else {
     stop(paste0("There is a problem with health facility type for survey ", FCdata$v000[1]))
   }
@@ -400,7 +482,9 @@ cleanFC <- function(FCdata) {
     # Add ethiopia
     "refHosp",
     "genHosp",
-    "primHosp"
+    "primHosp",
+    # Bangladesh
+    "dh", "uhc", "privh", "ngoh"
   ), 0, FCdata$type_h)
   
   # Health centres (1)
@@ -417,7 +501,9 @@ cleanFC <- function(FCdata) {
     "healthCent",
     "highClinic",
     "medClinic",
-    "lowClinic"
+    "lowClinic",
+    # Bangladesh
+    "uhfwc", "usc", "mcwc", "ngocln", "suncln"
   ), 1, FCdata$type_h)
   
   # Health posts and dispensaries (2)
@@ -429,7 +515,9 @@ cleanFC <- function(FCdata) {
     "clinic", 
     "hp",
     "htc",
-    "HTC"
+    "HTC",
+    # Bangladesh
+    "cc"
   ), 2, FCdata$type_h)
   
   # Convert type_h into a factor with levels 0-2 and appropriate labels
@@ -553,6 +641,24 @@ cleanFC <- function(FCdata) {
     FCdata$auth_category <- ifelse(FCdata$auth_privateProfit == 1, "privateProfit",FCdata$auth_category)
     FCdata$auth_category <- ifelse(FCdata$auth_ngoFaith         == 1, "ngoFaith",        FCdata$auth_category)
     
+  } else if (FCdata$v000[1] == "BD7") {  
+    # label define V008    
+    # 1 "Government/Public (MOHFW)"
+    # 2 "Local Government"
+    # 3 "NGO"
+    # 4 "Private for Profit"
+    
+    FCdata$auth_govPublic   <- ifelse(FCdata$v008 %in% 1, 1, 0)
+    FCdata$auth_localGov    <- ifelse(FCdata$v008 %in% 2, 1, 0)
+    FCdata$auth_ngo         <- ifelse(FCdata$v008 %in% 3, 1, 0)
+    FCdata$auth_privateProfit <- ifelse(FCdata$v008 %in% 4, 1, 0)
+    
+    FCdata$auth_category <- NA
+    FCdata$auth_category <- ifelse(FCdata$auth_govPublic   == 1, "govPublic",     FCdata$auth_category)
+    FCdata$auth_category <- ifelse(FCdata$auth_localGov    == 1, "localGov",      FCdata$auth_category)
+    FCdata$auth_category <- ifelse(FCdata$auth_ngo         == 1, "ngo",           FCdata$auth_category)
+    FCdata$auth_category <- ifelse(FCdata$auth_privateProfit == 1, "privateProfit", FCdata$auth_category)
+    
     
   } else {
     stop(paste0("There is a problem with health facility type for survey ", FCdata$v000[1]))
@@ -567,7 +673,8 @@ cleanFC <- function(FCdata) {
   FCdata$auth_h <- ifelse(is.na(FCdata$auth_h) & FCdata$auth_category %in% c(
     "govPublic", 
     "parastatal",
-    "otherGov"
+    "otherGov",
+    "localGov"   # Bangladesh
   ), 0, FCdata$auth_h)
   
   # Private not-for-profit (1)

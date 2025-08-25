@@ -126,6 +126,7 @@ cleanSL_toFCLevel <- function(SLdata) {
                 surgeon = sum((vu13 %in% c(1, 2) & vu27 == 1), na.rm = T) # medical doctor that provides surgery
       )
     
+    
   } else {
       stop("Value in svyID not recognized")
   }
