@@ -310,6 +310,60 @@ cleanFC <- function(FCdata) {
     FCdata$typeDHS_category <- ifelse(FCdata$typeDHS_disp == 1, "disp", FCdata$typeDHS_category)
     FCdata$typeDHS_category <- ifelse(FCdata$typeDHS_clinic == 1, "clinic", FCdata$typeDHS_category)
     
+  } else if (FCdata$v000[1] == "ET8") {    
+
+    # 1 "Referral hospital"
+    # 2 "General hospital"
+    # 3 "Primary hospital"
+    # 4 "Health center"
+    # 5 "Health post"
+    # 6 "Higher clinic"
+    # 7 "Medium clinic"
+    # 8 "Lower clinic"
+    # 9 "Specialty clinic"
+    
+    ## Specific type dummies
+    FCdata$type_refHosp    <- ifelse(FCdata$v007 %in% 1, 1, 0)
+    FCdata$type_genHosp    <- ifelse(FCdata$v007 %in% 2, 1, 0)
+    FCdata$type_primHosp   <- ifelse(FCdata$v007 %in% 3, 1, 0)
+    FCdata$type_healthCent <- ifelse(FCdata$v007 %in% 4, 1, 0)
+    FCdata$type_healthPost <- ifelse(FCdata$v007 %in% 5, 1, 0)
+    FCdata$type_highClinic <- ifelse(FCdata$v007 %in% 6, 1, 0)
+    FCdata$type_medClinic  <- ifelse(FCdata$v007 %in% 7, 1, 0)
+    FCdata$type_lowClinic  <- ifelse(FCdata$v007 %in% 8, 1, 0)
+    FCdata$type_specClinic <- ifelse(FCdata$v007 %in% 9, 1, 0)
+    
+    ## Single convenience string
+    FCdata$type_category <- NA
+    FCdata$type_category <- ifelse(FCdata$type_refHosp == 1,    "refHosp",    FCdata$type_category)
+    FCdata$type_category <- ifelse(FCdata$type_genHosp == 1,    "genHosp",    FCdata$type_category)
+    FCdata$type_category <- ifelse(FCdata$type_primHosp == 1,   "primHosp",   FCdata$type_category)
+    FCdata$type_category <- ifelse(FCdata$type_healthCent == 1, "healthCent", FCdata$type_category)
+    FCdata$type_category <- ifelse(FCdata$type_healthPost == 1, "healthPost", FCdata$type_category)
+    FCdata$type_category <- ifelse(FCdata$type_highClinic == 1, "highClinic", FCdata$type_category)
+    FCdata$type_category <- ifelse(FCdata$type_medClinic == 1,  "medClinic",  FCdata$type_category)
+    FCdata$type_category <- ifelse(FCdata$type_lowClinic == 1,  "lowClinic",  FCdata$type_category)
+    FCdata$type_category <- ifelse(FCdata$type_specClinic == 1, "specClinic", FCdata$type_category)
+    
+    ## DHS-style categories (8 groups, per your mapping)
+    FCdata$typeDHS_refHosp          <- ifelse(FCdata$v007 %in% 1,       1, 0)
+    FCdata$typeDHS_genHosp          <- ifelse(FCdata$v007 %in% 2,       1, 0)
+    FCdata$typeDHS_primHosp         <- ifelse(FCdata$v007 %in% 3,       1, 0)
+    FCdata$typeDHS_healthCentre     <- ifelse(FCdata$v007 %in% 4,       1, 0)
+    FCdata$typeDHS_healthPost       <- ifelse(FCdata$v007 %in% 5,       1, 0)
+    FCdata$typeDHS_specHighClinic   <- ifelse(FCdata$v007 %in% c(6, 9), 1, 0)  # Specialty/higher clinic
+    FCdata$typeDHS_medClinic        <- ifelse(FCdata$v007 %in% 7,       1, 0)
+    FCdata$typeDHS_lowClinic        <- ifelse(FCdata$v007 %in% 8,       1, 0)
+    
+    FCdata$typeDHS_category <- NA
+    FCdata$typeDHS_category <- ifelse(FCdata$typeDHS_refHosp == 1,        "Referral hospital",           FCdata$typeDHS_category)
+    FCdata$typeDHS_category <- ifelse(FCdata$typeDHS_genHosp == 1,        "General hospital",            FCdata$typeDHS_category)
+    FCdata$typeDHS_category <- ifelse(FCdata$typeDHS_primHosp == 1,       "Primary hospital",            FCdata$typeDHS_category)
+    FCdata$typeDHS_category <- ifelse(FCdata$typeDHS_healthCentre == 1,   "Health centre",               FCdata$typeDHS_category)
+    FCdata$typeDHS_category <- ifelse(FCdata$typeDHS_healthPost == 1,     "Health post",                 FCdata$typeDHS_category)
+    FCdata$typeDHS_category <- ifelse(FCdata$typeDHS_specHighClinic == 1, "Specialty/higher clinic",     FCdata$typeDHS_category)
+    FCdata$typeDHS_category <- ifelse(FCdata$typeDHS_medClinic == 1,      "Medium clinic",               FCdata$typeDHS_category)
+    FCdata$typeDHS_category <- ifelse(FCdata$typeDHS_lowClinic == 1,      "Lower clinic",                FCdata$typeDHS_category)
     
     
   } else {
@@ -342,7 +396,11 @@ cleanFC <- function(FCdata) {
     "otherPubHosp", 
     "nationalRefHosp", 
     "distDesigHosp", 
-    "otherHosp"
+    "otherHosp",
+    # Add ethiopia
+    "refHosp",
+    "genHosp",
+    "primHosp"
   ), 0, FCdata$type_h)
   
   # Health centres (1)
@@ -354,7 +412,12 @@ cleanFC <- function(FCdata) {
     "maternity", 
     "primaryhcc", 
     "healthCentre", 
-    "UHC"
+    "UHC",
+    # Ethiopia
+    "healthCent",
+    "highClinic",
+    "medClinic",
+    "lowClinic"
   ), 1, FCdata$type_h)
   
   # Health posts and dispensaries (2)
@@ -471,6 +534,25 @@ cleanFC <- function(FCdata) {
     FCdata$auth_category <- ifelse(FCdata$auth_faith == 1, "faith", FCdata$auth_category)
     FCdata$auth_category <- ifelse(FCdata$auth_parastatal == 1, "parastatal", FCdata$auth_category)
     
+  } else if (FCdata$v000[1] == "ET8") {  
+    # label define V008    
+    # 1 "Government/Public"
+    # 2 "Other governmental (military, prison, federal police)"
+    # 3 "Private for profit"
+    # 4 "NGO (Mission/Faith-based, non profit)"
+    
+    
+    FCdata$auth_govPublic     <- ifelse(FCdata$v008 %in% 1, 1, 0)
+    FCdata$auth_otherGov      <- ifelse(FCdata$v008 %in% 2, 1, 0)
+    FCdata$auth_privateProfit <- ifelse(FCdata$v008 %in% 3, 1, 0)
+    FCdata$auth_ngoFaith         <- ifelse(FCdata$v008 %in% 4, 1, 0)   # recode ngoFaith → faith
+    
+    FCdata$auth_category <- NA
+    FCdata$auth_category <- ifelse(FCdata$auth_govPublic     == 1, "govPublic",    FCdata$auth_category)
+    FCdata$auth_category <- ifelse(FCdata$auth_otherGov      == 1, "otherGov",     FCdata$auth_category)
+    FCdata$auth_category <- ifelse(FCdata$auth_privateProfit == 1, "privateProfit",FCdata$auth_category)
+    FCdata$auth_category <- ifelse(FCdata$auth_faith         == 1, "ngoFaith",        FCdata$auth_category)
+    
     
   } else {
     stop(paste0("There is a problem with health facility type for survey ", FCdata$v000[1]))
@@ -484,7 +566,8 @@ cleanFC <- function(FCdata) {
   # Public (0)
   FCdata$auth_h <- ifelse(is.na(FCdata$auth_h) & FCdata$auth_category %in% c(
     "govPublic", 
-    "parastatal"
+    "parastatal",
+    "otherGov"
   ), 0, FCdata$auth_h)
   
   # Private not-for-profit (1)
@@ -493,7 +576,8 @@ cleanFC <- function(FCdata) {
     "CHAM", 
     "faith", 
     "ngo", 
-    "mixed"
+    "mixed",
+    "ngoFaith" # Ethiopia
   ), 1, FCdata$auth_h)
   
   # Private for-profit (2)
