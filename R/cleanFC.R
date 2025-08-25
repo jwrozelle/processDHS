@@ -825,7 +825,7 @@ cleanFC <- function(FCdata) {
   FCdata$toilet_st <- NA
   FCdata$toilet_st <- ifelse(FCdata$v153 %in% c(1), 1, 0)
   
-  if (FCdata$v000 %in% "ET8") {
+  if (FCdata$v000[1] %in% "ET8") {
     
     # label define V153A   
     # 0 "No functioning facility"
