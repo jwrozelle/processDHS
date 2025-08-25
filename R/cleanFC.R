@@ -551,7 +551,7 @@ cleanFC <- function(FCdata) {
     FCdata$auth_category <- ifelse(FCdata$auth_govPublic     == 1, "govPublic",    FCdata$auth_category)
     FCdata$auth_category <- ifelse(FCdata$auth_otherGov      == 1, "otherGov",     FCdata$auth_category)
     FCdata$auth_category <- ifelse(FCdata$auth_privateProfit == 1, "privateProfit",FCdata$auth_category)
-    FCdata$auth_category <- ifelse(FCdata$auth_faith         == 1, "ngoFaith",        FCdata$auth_category)
+    FCdata$auth_category <- ifelse(FCdata$auth_ngoFaith         == 1, "ngoFaith",        FCdata$auth_category)
     
     
   } else {
