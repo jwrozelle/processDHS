@@ -824,6 +824,27 @@ cleanFC <- function(FCdata) {
   
   FCdata$toilet_st <- NA
   FCdata$toilet_st <- ifelse(FCdata$v153 %in% c(1), 1, 0)
+  
+  if (FCdata$v000 %in% "ET8") {
+    
+    # label define V153A   
+    # 0 "No functioning facility"
+    # 11 "Flush to piped sewer system"
+    # 12 "Flush to septic tank"
+    # 13 "Flush to pit latrine"
+    # 14 "Flush to somewhere else"
+    # 15 "Flush, don't know where"
+    # 21 "Ventilated improved pit latrine"
+    # 22 "Pit latrine with slab"
+    # 23 "Pit latrine without slab/ open pit"
+    # 31 "Composting toilet"
+    # 41 "Bucket toilet"
+    # 51 "Hanging toilet/ hanging latrine"
+    
+    FCdata$toilet_st <- NA
+    FCdata$toilet_st <- ifelse(FCdata$v153a %in% c(11, 12, 13, 14, 15, 21, 22, 23, 31, 41, 51), 1, 0)
+  }
+  
   #   * comm_st Communication equipment (phone or SW radio): Reported availability accepted
     # label define V127    
     # 0 "No functioning landline, cell phone or shortwave at facility"
