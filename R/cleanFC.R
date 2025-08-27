@@ -1005,7 +1005,26 @@ cleanFC <- function(FCdata) {
     FCdata$ambulance_st <- ifelse(FCdata$sf452 %in% c(1), 1, FCdata$ambulance_st)
   }
   
-  basicamenitiesVars <- c("elec_st", "water_st", "privvisaud_all_st", "toilet_st", "comm_st", "compInt_st", "ambulance_st")
+  basicamenitiesVars <- c(
+    "elec_st", 
+    "water_st", 
+    "privvisaud_all_st", 
+    "toilet_st", 
+    "comm_st", 
+    "compInt_st", 
+    "ambulance_st"
+    )
+  
+  # Figure out how many columns are "eligible": not entirely NA or 0
+  valid_basicamenities <- basicamenitiesVars[
+    sapply(FCdata[basicamenitiesVars], function(x) any(!is.na(x) & x != 0))
+  ]
+  
+  
+  #   DOMAIN SCORE: sri_diagcapacity
+  FCdata$sri_basicamenities_avail <- NA
+  FCdata$sri_basicamenities_avail <- rowSums(FCdata[valid_basicamenities], na.rm = TRUE) / length(valid_basicamenities)
+  FCdata$sri_basicamenities_valid <- length(valid_basicamenities)
   
   # DOMAIN SCORE sri_basicamenities
   FCdata$sri_basicamenities <- NA
@@ -1185,6 +1204,18 @@ cleanFC <- function(FCdata) {
                       "eq_stetho_st", 
                       "eq_bp_st", 
                       "eq_light_st")
+  
+  
+  # Figure out how many columns are "eligible": not entirely NA or 0
+  valid_basicequip <- basicequipVars[
+    sapply(FCdata[basicequipVars], function(x) any(!is.na(x) & x != 0))
+  ]
+  
+  
+  #   DOMAIN SCORE: sri_basicequip
+  FCdata$sri_basicequip_avail <- NA
+  FCdata$sri_basicequip_avail <- rowSums(FCdata[valid_basicequip], na.rm = TRUE) / length(valid_basicequip)
+  FCdata$sri_basicequip_valid <- length(valid_basicequip)
   
   # DOMAIN SCORE: sri_basicequip
   FCdata$sri_basicequip <- NA
@@ -1437,8 +1468,19 @@ cleanFC <- function(FCdata) {
                    "gloves_prop_st",
                    "guideprecaution")
   
+  # Figure out how many columns are "eligible": not entirely NA or 0
+  valid_infprev <- infprevVars[
+    sapply(FCdata[infprevVars], function(x) any(!is.na(x) & x != 0))
+  ]
   
-  # DOMAIN SCORE: 
+  
+  #   DOMAIN SCORE: sri_infprev
+  FCdata$sri_infprev_avail <- NA
+  FCdata$sri_infprev_avail <- rowSums(FCdata[valid_infprev], na.rm = TRUE) / length(valid_infprev)
+  FCdata$sri_infprev_valid <- length(valid_infprev)
+  
+  
+  # DOMAIN SCORE:
   FCdata$sri_infprev <- NA
   FCdata$sri_infprev<- rowSums(FCdata[infprevVars], na.rm = TRUE) / length(infprevVars)
   
@@ -1516,6 +1558,17 @@ cleanFC <- function(FCdata) {
                         "diag_hiv",
                         "diag_syphilis", 
                         "diag_urinepreg")
+  
+  # Figure out how many columns are "eligible": not entirely NA or 0
+  valid_diagcapacity <- diagcapacityVars[
+    sapply(FCdata[diagcapacityVars], function(x) any(!is.na(x) & x != 0))
+  ]
+  
+  
+  #   DOMAIN SCORE: sri_diagcapacity
+  FCdata$sri_diagcapacity_avail <- NA
+  FCdata$sri_diagcapacity_avail <- rowSums(FCdata[valid_diagcapacity], na.rm = TRUE) / length(valid_diagcapacity)
+  FCdata$sri_diagcapacity_valid <- length(valid_diagcapacity)
   
   #   DOMAIN SCORE: sri_diagcapacity
   FCdata$sri_diagcapacity <- NA
@@ -1721,10 +1774,20 @@ cleanFC <- function(FCdata) {
                "med_aspirin" #!!! Added
                )
   
-  #   DOMAIN SCORE: sri_diagcapacity
-  FCdata$sri_med <- NA
-  FCdata$sri_med <- rowSums(FCdata[medVars], na.rm = TRUE) / 24
+  # Figure out how many columns are "eligible": not entirely NA or 0
+  valid_meds <- medVars[
+    sapply(FCdata[medVars], function(x) any(!is.na(x) & x != 0))
+  ]
   
+  
+  #   DOMAIN SCORE: sri_med
+  FCdata$sri_med_avail <- NA
+  FCdata$sri_med_avail <- rowSums(FCdata[valid_meds], na.rm = TRUE) / length(valid_meds)
+  FCdata$sri_med_valid <- length(valid_meds)
+  
+  #   DOMAIN SCORE: sri_med
+  FCdata$sri_med <- NA
+  FCdata$sri_med <- rowSums(FCdata[medVars], na.rm = TRUE) / length(medVars)
   
   FCdata$sri_score <- NA
   FCdata$sri_score <-rowSums(FCdata[c("sri_basicamenities",
@@ -1732,6 +1795,14 @@ cleanFC <- function(FCdata) {
                                       "sri_infprev",
                                       "sri_diagcapacity",
                                       "sri_med")], na.rm = TRUE) / 5
+  
+  FCdata$sri_score_avail <- NA
+  FCdata$sri_score_avail <-rowSums(FCdata[c(
+    "sri_basicamenities_avail",
+    "sri_basicequip_avail",
+    "sri_infprev_avail",
+    "sri_diagcapacity_avail",
+    "sri_med_avail")], na.rm = TRUE) / 5
   
   
   sriVars <- c(medVars, 
