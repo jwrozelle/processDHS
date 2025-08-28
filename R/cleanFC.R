@@ -22,6 +22,9 @@ cleanFC <- function(FCdata) {
   # Facility ID
   FCdata$facID <- FCdata$v004
   
+  # Completed
+  FCdata$completed <- ifelse(FCdata$v010a %in% 1, 1, 0)
+  
   # Facility type (country specific)
   if (FCdata$v000[1] == "AF7") {
     
@@ -447,6 +450,99 @@ cleanFC <- function(FCdata) {
     FCdata$typeDHS_category <- ifelse(FCdata$typeDHS_privh  == 1, "privh",  FCdata$typeDHS_category)
     
     
+  } else if (FCdata$v000[1] == "NP8") {        
+    # label define V007    
+    # 1 "Federal level hospital"
+    # 2 "Provincial level hospital"
+    # 3 "Local level hospital"
+    # 4 "Local level health facility"
+    # 5 "Other hospital (private, not-state-owned)"
+    # 6 "Primary Health Care Center (PHCC)"
+    # 7 "Health Post (HP)"
+    # 8 "Community Health Unit (CHU)"
+    # 9 "Urban Health Centre (UHC)"
+    # 10 "HTC (stand alone)"
+    # 11 "Other Public Hospital"
+    
+    # 1   2   3   5   6   7   8   9  10 
+    # 25  77  46 279 183 380 289 286  61
+    
+    # 1   4   5   6
+    # 1   21   0   3   1 Federal/Provincial hopsital
+    # 2   76   1   0   0 Federal/Provincial hopsital
+    # 3   45   0   0   1 Local-level hopsital
+    # 5  258   0  17   4 Private hospital
+    # 6  183   0   0   0 PHCC
+    # 7  380   0   0   0 HP
+    # 8  288   0   1   0  CHU
+    # 9  284   0   2   0 UHC
+    # 10  41   0   8  12 SA HTCs
+    
+    ## specific type dummies
+    FCdata$type_fedhosp   <- ifelse(FCdata$v007 %in% 1, 1, 0)
+    FCdata$type_provhosp  <- ifelse(FCdata$v007 %in% 2, 1, 0)
+    FCdata$type_localhosp <- ifelse(FCdata$v007 %in% 3, 1, 0)
+    FCdata$type_localhf   <- ifelse(FCdata$v007 %in% 4, 1, 0)
+    FCdata$type_privhosp  <- ifelse(FCdata$v007 %in% 5, 1, 0)
+    FCdata$type_phcc      <- ifelse(FCdata$v007 %in% 6, 1, 0)
+    FCdata$type_hp        <- ifelse(FCdata$v007 %in% 7, 1, 0)
+    FCdata$type_chu       <- ifelse(FCdata$v007 %in% 8, 1, 0)
+    FCdata$type_uhc       <- ifelse(FCdata$v007 %in% 9, 1, 0)
+    FCdata$type_htc       <- ifelse(FCdata$v007 %in% 10, 1, 0)
+    FCdata$type_pubhospO  <- ifelse(FCdata$v007 %in% 11, 1, 0)  # other public hosp
+    
+    ## single string
+    FCdata$type_category <- NA
+    FCdata$type_category <- ifelse(FCdata$type_fedhosp   == 1, "fedhosp",   FCdata$type_category)
+    FCdata$type_category <- ifelse(FCdata$type_provhosp  == 1, "provhosp",  FCdata$type_category)
+    FCdata$type_category <- ifelse(FCdata$type_localhosp == 1, "localhosp", FCdata$type_category)
+    FCdata$type_category <- ifelse(FCdata$type_localhf   == 1, "localhf",   FCdata$type_category)
+    FCdata$type_category <- ifelse(FCdata$type_privhosp  == 1, "privhosp",  FCdata$type_category)
+    FCdata$type_category <- ifelse(FCdata$type_phcc      == 1, "phcc",      FCdata$type_category)
+    FCdata$type_category <- ifelse(FCdata$type_hp        == 1, "hp",        FCdata$type_category)
+    FCdata$type_category <- ifelse(FCdata$type_chu       == 1, "chu",       FCdata$type_category)
+    FCdata$type_category <- ifelse(FCdata$type_uhc       == 1, "uhc",       FCdata$type_category)
+    FCdata$type_category <- ifelse(FCdata$type_htc       == 1, "htc",       FCdata$type_category)
+    FCdata$type_category <- ifelse(FCdata$type_pubhospO  == 1, "pubhospO",  FCdata$type_category)
+    
+    
+    # DHS categories
+    # Federal / Provincial level hospitals
+    #   Local-level hospitals
+    #   Private hospitals
+    #   PHCC
+    # Basic Health care centers
+    #   HCs
+    #   UHCs
+    #   CHUs
+    # Stand-alone HTCs
+    
+
+    ## DHS-style categories (compact, single-word) !!!
+    # Hospitals
+    FCdata$typeDHS_fedprovh <- ifelse(FCdata$v007 %in% c(1,2), 1, 0)  # federal/provincial public hosp
+    FCdata$typeDHS_localh   <- ifelse(FCdata$v007 %in% c(3), 1, 0)  # local
+    FCdata$typeDHS_privh    <- ifelse(FCdata$v007 %in% 5, 1, 0)  # private hosp
+    # PHCC
+    FCdata$typeDHS_phcc     <- ifelse(FCdata$v007 %in% 6, 1, 0)
+    # Basic health care centers (HCs, UHCs, CHUs)
+    FCdata$typeDHS_hp       <- ifelse(FCdata$v007 %in% 7,       1, 0)
+    FCdata$typeDHS_uhc      <- ifelse(FCdata$v007 %in% c(9),1, 0) 
+    FCdata$typeDHS_chu      <- ifelse(FCdata$v007 %in% c(8),1, 0) 
+    # HTC
+    FCdata$typeDHS_htc      <- ifelse(FCdata$v007 %in% 10,      1, 0)
+    
+    FCdata$typeDHS_category <- NA
+    FCdata$typeDHS_category <- ifelse(FCdata$typeDHS_fedprovh == 1, "fedprovh", FCdata$typeDHS_category)
+    FCdata$typeDHS_category <- ifelse(FCdata$typeDHS_localh   == 1, "localh",   FCdata$typeDHS_category)
+    FCdata$typeDHS_category <- ifelse(FCdata$typeDHS_privh    == 1, "privh",    FCdata$typeDHS_category)
+    FCdata$typeDHS_category <- ifelse(FCdata$typeDHS_phcc     == 1, "phcc",     FCdata$typeDHS_category)
+    FCdata$typeDHS_category <- ifelse(FCdata$typeDHS_uhc      == 1, "uhc",      FCdata$typeDHS_category)
+    FCdata$typeDHS_category <- ifelse(FCdata$typeDHS_chu      == 1, "chu",      FCdata$typeDHS_category)
+    FCdata$typeDHS_category <- ifelse(FCdata$typeDHS_hp       == 1, "hp",       FCdata$typeDHS_category)
+    FCdata$typeDHS_category <- ifelse(FCdata$typeDHS_htc      == 1, "htc",      FCdata$typeDHS_category)
+    
+    
     
   } else {
     stop(paste0("There is a problem with health facility type for survey ", FCdata$v000[1]))
@@ -658,6 +754,27 @@ cleanFC <- function(FCdata) {
     FCdata$auth_category <- ifelse(FCdata$auth_localGov    == 1, "localGov",      FCdata$auth_category)
     FCdata$auth_category <- ifelse(FCdata$auth_ngo         == 1, "ngo",           FCdata$auth_category)
     FCdata$auth_category <- ifelse(FCdata$auth_privateProfit == 1, "privateProfit", FCdata$auth_category)
+    
+
+  } else if (FCdata$v000[1] == "NP8") {  
+    
+    # label define V008    
+    # 1 "Government/Public"
+    # 2 "NGO/Private not-for-profit"
+    # 3 "Private for profit"
+    # 4 "Mission/Faith-based"
+
+    FCdata$auth_govPublic   <- ifelse(FCdata$v008 %in% 1, 1, 0)
+    FCdata$auth_ngo    <- ifelse(FCdata$v008 %in% 2, 1, 0)
+    FCdata$auth_privateProfit <- ifelse(FCdata$v008 %in% 3, 1, 0)
+    FCdata$auth_faith <- ifelse(FCdata$v008 %in% 4, 1, 0)
+    
+    FCdata$auth_category <- NA
+    FCdata$auth_category <- ifelse(FCdata$auth_govPublic   == 1, "govPublic",     FCdata$auth_category)
+    FCdata$auth_category <- ifelse(FCdata$auth_ngo    == 1, "ngo",      FCdata$auth_category)
+    FCdata$auth_category <- ifelse(FCdata$auth_privateProfit == 1, "privateProfit", FCdata$auth_category)
+    FCdata$auth_category <- ifelse(FCdata$auth_faith == 1, "faith", FCdata$auth_category)        
+    
     
     
   } else {
