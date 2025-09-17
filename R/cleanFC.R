@@ -23,7 +23,11 @@ cleanFC <- function(FCdata) {
   FCdata$facID <- FCdata$v004
   
   # Completed
-  FCdata$completed <- ifelse(FCdata$v010a %in% 1, 1, 0)
+  if ("v010a" %in% names(FCdata)) {
+    
+    FCdata$completed <- ifelse(FCdata$v010a %in% 1, 1, 0)
+    
+  }
   
   # Facility type (country specific)
   if (FCdata$v000[1] == "AF7") {
@@ -1254,7 +1258,7 @@ cleanFC <- function(FCdata) {
   FCdata$eq_ad_scale_st <- NA
   FCdata$eq_ad_scale_st <- ifelse(FCdata$eqanc_ad_scale_st %in% c(1) | 
                                     FCdata$eqncd_ad_scale_st %in% c(1) | 
-                                    FCdata$eqncd_ad_scale_st  %in% c(1),
+                                    FCdata$eqgopd_ad_scale_st  %in% c(1),
                                   1, 0)
   #   * Child scale	rowmax(eqsc_pedscale_st eqncd_ch_scale_st)
   #     - eqsc_pedscale_st: pediatric scales in sick child room
@@ -1516,7 +1520,7 @@ cleanFC <- function(FCdata) {
                                 "v1281c",
                                 "v1329c",
                                 "v1610c",
-                                "v1705c")], function(x) {is.na(x)}
+                                "v1705c")], function(x) {!is.na(x)} # added the exclamation point
     )
     )
   #     - water_prop_st: Proportion of assessed rooms that have piped water or water in a pitcher (not bucket) observed
@@ -1552,7 +1556,7 @@ cleanFC <- function(FCdata) {
                                 "v1281a1",
                                 "v1329a1",
                                 "v1610a1",
-                                "v1705a1")], function(x) {is.na(x)}
+                                "v1705a1")], function(x) {!is.na(x)}
     )
     )
   #     - handdisinf_prop_st: Proportion of assessed rooms that have hand disinfectant observed (not bucket) observed
@@ -1588,7 +1592,7 @@ cleanFC <- function(FCdata) {
                                 "v1281q",
                                 "v1329q",
                                 "v1610q",
-                                "v1705q")], function(x) {is.na(x)}
+                                "v1705q")], function(x) {!is.na(x)}
     )
     )
   #     - handwash_any_st: soap_prop_st > 0 & water_prop_st > 0 | handdisinf_prop_st > 0
@@ -1606,7 +1610,7 @@ cleanFC <- function(FCdata) {
                             "v431g",
                             "v531g",
                             "v631g",
-                            "v866g", 
+                            "v866g",
                             "v1139g",
                             "v1277g",
                             "v1281g",
@@ -1629,7 +1633,7 @@ cleanFC <- function(FCdata) {
                                 "v1281g",
                                 "v1329g",
                                 "v1610g",
-                                "v1705g")], function(x) {is.na(x)}
+                                "v1705g")], function(x) {!is.na(x)}
     )
     ) >0,
     1,0
