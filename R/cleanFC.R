@@ -594,7 +594,7 @@ cleanFC <- function(FCdata) {
     FCdata$typeDHS_category <- ifelse(FCdata$typeDHS_sickbay      == 1, "sickbay",      FCdata$typeDHS_category)
   
     
-  } else if (FCdata$v000[1] == "SN6") {  
+  # } else if (FCdata$v000[1] == "SN6") {  
     
     # label define V007    
     # 1 "Hospital"
@@ -842,7 +842,7 @@ cleanFC <- function(FCdata) {
     FCdata$auth_category <- ifelse(FCdata$auth_faith == 1, "faith", FCdata$auth_category)        
     
     
-  } else if (FCdata$v000[1] == "NM08") {  
+  } else if (FCdata$v000[1] == "NM09") {  
 
     # label define V008    
     # 1 "Public - MoHSS"
