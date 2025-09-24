@@ -947,22 +947,44 @@ cleanFC <- function(FCdata) {
     # 1 "Yes, observed"
     # 2 "Yes, reported"
   
+  watVars <- c("v124", 
+               "v168a1", 
+               "v231a1", 
+               "v264a1", 
+               "v331a1",
+               "v431a1",
+               "v531a1",
+               "v631a1",
+               "v1139a1",
+               "v1277a1",
+               "v1281a1",
+               "v1329a1",
+               "v1610a1",
+               "v1705a1"
+  )
+  
   FCdata$water <- NA
-  FCdata$water <- ifelse(FCdata$v124 %in% c(1) | 
-                           FCdata$v168a1 %in% c(1) | 
-                           FCdata$v231a1 %in% c(1) | 
-                           FCdata$v264a1 %in% c(1) | 
-                           FCdata$v331a1 %in% c(1) | 
-                           FCdata$v431a1 %in% c(1) | 
-                           FCdata$v531a1 %in% c(1) | 
-                           FCdata$v631a1 %in% c(1) | 
-                           FCdata$v1139a1 %in% c(1) | 
-                           FCdata$v1277a1 %in% c(1) | 
-                           FCdata$v1281a1 %in% c(1) | 
-                           FCdata$v1329a1 %in% c(1) | 
-                           FCdata$v1610a1 %in% c(1) | 
-                           FCdata$v1705a1 %in% c(1), 
-                         1, 0) # count if there is water onsite or w/in 500 meters
+  FCdata$water <- ifelse(FCdata$v124 %in% c(1), 1, 0)
+  for (watVar in watVars[watVars %in% names(FCdata)]) {
+    FCdata$water <- ifelse(FCdata[[watVar]] %in% c(1), 1, FCdata$water)
+  }
+  
+  # FCdata$water <- NA
+  # FCdata$water <- ifelse(FCdata$v124 %in% c(1) | 
+  #                          FCdata$v168a1 %in% c(1) | 
+  #                          FCdata$v231a1 %in% c(1) | 
+  #                          FCdata$v264a1 %in% c(1) | 
+  #                          FCdata$v331a1 %in% c(1) | 
+  #                          FCdata$v431a1 %in% c(1) | 
+  #                          FCdata$v531a1 %in% c(1) | 
+  #                          FCdata$v631a1 %in% c(1) | 
+  #                          FCdata$v1139a1 %in% c(1) | 
+  #                          FCdata$v1277a1 %in% c(1) | 
+  #                          FCdata$v1281a1 %in% c(1) | 
+  #                          FCdata$v1329a1 %in% c(1) | 
+  #                          FCdata$v1610a1 %in% c(1) | 
+  #                          FCdata$v1705a1 %in% c(1), 
+  #                        1, 0) # count if there is water onsite or w/in 500 meters
   
   # electricity
   #   Grid
