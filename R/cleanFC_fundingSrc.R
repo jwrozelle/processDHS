@@ -388,9 +388,13 @@ cleanFC_fundingSrc <- function(FCdata) {
   # PRIVATE (private third-party & OOP)
   .private_cols <- c(
     "funding_insurance",                       # medical schemes/insurance
-    "funding_employer",                        # employer reimbursement
-    "funding_userFees"                         # user fees / internal revenue / service charge
+    "funding_employer"                        # employer reimbursement
   )
+  
+  # USER FEES (if applicable)
+  .userFee_cols <- c(
+    "funding_userFees"
+    )                         # user fees / internal revenue / service charge
   
   # NON-STATE (external to government)
   # includes donors/INGOs, faith-based, community, training colleges, bilateral & multilateral
@@ -404,10 +408,11 @@ cleanFC_fundingSrc <- function(FCdata) {
   # OTHER (specified "other" catch-all; keep DK separately above)
   .other_cols <- c("funding_other")
   
-  # ---- build 4 buckets ----
+  # ---- build 5 buckets ----
   FCdata$funding_h_public   <- .any1(FCdata, .public_cols)
   FCdata$funding_h_private  <- .any1(FCdata, .private_cols)
   FCdata$funding_h_nonstate <- .any1(FCdata, .nonstate_cols)
+  FCdata$funding_h_userFees <- .any1(FCdata, .userFee_cols)
   FCdata$funding_h_other    <- .any1(FCdata, .other_cols)
   
   
