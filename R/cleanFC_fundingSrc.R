@@ -100,6 +100,8 @@ cleanFC_fundingSrc <- function(FCdata) {
     # any funding
     FCdata$funding_any <- ifelse(FCdata$v146y %in% 0,1, 0)
     
+    FCdata$funding_userFees <- NA
+    
   } else if (FCdata$v000[[1]] %in% "AF7") {
     
     # label variable v146a    "Outside funding: Ministry of public health - CS"
@@ -339,6 +341,8 @@ cleanFC_fundingSrc <- function(FCdata) {
     # any funding
     FCdata$funding_any <- ifelse(FCdata$v146y %in% 0,1, 0)
     
+    FCdata$funding_userFees <- NA
+    
     
     
   } else {
@@ -372,6 +376,8 @@ cleanFC_fundingSrc <- function(FCdata) {
   if (identical(FCdata$v000[[1]], "NP8")) {
     FCdata$funding_localGov <- ifelse("v146d" %in% names(FCdata), as.integer(FCdata$v146d %in% 1), 0L)
   }
+  
+  FCdata$funding_none <- ifelse(FCdata$funding_any %in% 0, 1, 0)
   
   # ---- 4 bucket column groups ----
   
