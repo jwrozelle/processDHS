@@ -671,7 +671,7 @@ cleanIR <- function(dataset){
   
   ## Family planning messages
   
-  if (!IRdata$v000[1] %in% c("RW7", "HT7")) {
+  if (!IRdata$v000[1] %in% c("RW7", "HT7", "MW7")) {
     # Family planning messages by radio 
     IRdata <- IRdata %>%
       mutate(fp_evuse_any = 
