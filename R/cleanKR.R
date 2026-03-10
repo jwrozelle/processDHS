@@ -301,9 +301,9 @@ cleanKR <- function(KRdata) {
       mutate(ch_fev_care_day = NA)
   }
   
-  # # //Given antibiotics for fever 
+  # # //Given antibiotics for fever
   # KRdata <- KRdata %>%
-  #   mutate(ch_fev_antib = 
+  #   mutate(ch_fev_antib =
   #            case_when(
   #              ch_fever==1 & (h37i==1 | h37j==1)  ~ 1,
   #              ch_fever==1 & (ml13i==1 | ml13j ==1)  ~ 1,

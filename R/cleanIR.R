@@ -671,7 +671,7 @@ cleanIR <- function(dataset){
   
   ## Family planning messages
   
-  if (!IRdata$v000[1] %in% c("RW7", "HT7", "MW7")) {
+  if (!IRdata$v000[1] %in% c("RW7", "HT7", "MW7", "MW6")) {
     # Family planning messages by radio 
     IRdata <- IRdata %>%
       mutate(fp_evuse_any = 
@@ -825,6 +825,7 @@ cleanIR <- function(dataset){
     #------------------------------------------------------------------------------#
     
     
+    } else if (!IRdata$v000[1] %in% c("RW7", "MW7")) {
     
     ### Current use of contraceptive methods
     
