@@ -825,7 +825,9 @@ cleanIR <- function(dataset){
     #------------------------------------------------------------------------------#
     
     
-    } else if (!IRdata$v000[1] %in% c("RW7", "MW7")) {
+    } 
+  
+  if (!IRdata$v000[1] %in% c("RW7", "MW7")) {
     
     ### Current use of contraceptive methods
     
